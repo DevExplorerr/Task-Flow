@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/widgets/add_task_button.dart';
 import 'package:task_management_app/widgets/colors.dart';
 
 class TaskSearchBar extends StatefulWidget {
-  final Function(String) onAddTask;
   final Function(String) onSearchChanged;
-  const TaskSearchBar(
-      {super.key, required this.onAddTask, required this.onSearchChanged});
+  const TaskSearchBar({super.key, required this.onSearchChanged});
 
   @override
   State<TaskSearchBar> createState() => _TaskSearchBarState();
@@ -48,10 +45,6 @@ class _TaskSearchBarState extends State<TaskSearchBar> {
             ),
             style: GoogleFonts.podkova(color: textColor),
           ),
-        ),
-        SizedBox(width: 12.w),
-        AddTaskButton(
-          onAddTask: widget.onAddTask,
         ),
       ],
     );

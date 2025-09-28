@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/widgets/custom_bottom_sheet.dart';
 import 'colors.dart';
 
 class TaskListTile extends StatefulWidget {
@@ -26,6 +25,8 @@ class TaskListTile extends StatefulWidget {
 class _TaskListTileState extends State<TaskListTile> {
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller =
+        TextEditingController(text: widget.taskTitle);
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6.h),
       decoration: BoxDecoration(
@@ -44,7 +45,18 @@ class _TaskListTileState extends State<TaskListTile> {
                 showDragHandle: true,
                 isScrollControlled: true,
                 context: context,
-                builder: (context) => _buildBottomSheet(context));
+                builder: (context) => CustomBottomSheet(
+                      hintText: 'Edit your task...',
+                      text: 'Edit Task',
+                      buttonText: 'Save',
+                      onPressed: () {
+                        if (controller.text.trim().isNotEmpty) {
+                          widget.onEdit(controller.text.trim());
+                          Navigator.pop(context);
+                        }
+                      },
+                      controller: controller,
+                    ));
           },
           child: Text(
             widget.taskTitle,
@@ -83,65 +95,6 @@ class _TaskListTileState extends State<TaskListTile> {
             Icons.close_sharp,
             color: listViewDeleteIconColor,
             size: 28,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomSheet(BuildContext context) {
-    final TextEditingController controller =
-        TextEditingController(text: widget.taskTitle);
-
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.h),
-                CustomTextfield(
-                  hintText: "Edit your task...",
-                  controller: controller,
-                  text: "Edit Task",
-                  maxLines: 2,
-                  keyboardType: TextInputType.multiline,
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("Cancel",
-                          style: GoogleFonts.poppins(color: textColor)),
-                    ),
-                    SizedBox(width: 10.w),
-                    CustomButton(
-                      buttonColor: primaryButtonColor,
-                      buttonText: "Save",
-                      buttonTextColor: primaryButtonTextColor,
-                      fontSize: 14.sp,
-                      onPressed: () {
-                        if (controller.text.trim().isNotEmpty) {
-                          widget.onEdit(controller.text.trim());
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ),
         ),
       ),
