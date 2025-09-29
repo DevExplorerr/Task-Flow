@@ -44,6 +44,7 @@ class CustomBottomSheet extends StatelessWidget {
                   text: text,
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
+                  autoFocus: true,
                 ),
                 SizedBox(height: 20.h),
                 Row(

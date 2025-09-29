@@ -9,7 +9,7 @@ import 'package:task_management_app/widgets/custom_bottom_sheet.dart';
 import 'package:task_management_app/widgets/home_app_bar.dart';
 import 'package:task_management_app/widgets/home_drawer.dart';
 import 'package:task_management_app/widgets/task_search_bar.dart';
-import '../widgets/task_list_tile.dart.dart';
+import '../widgets/task_list_tile.dart';
 import '../widgets/task_sub_header.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,89 +20,120 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController titleController = TextEditingController();
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController titleController = TextEditingController();
     final taskProvider = Provider.of<TaskProvider>(context);
+
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          backgroundColor: bgColor,
-          automaticallyImplyLeading: false,
-          toolbarHeight: 100.h,
-          title: HomeAppBar(),
+        backgroundColor: bgColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(165.h),
+          child: AppBar(
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            backgroundColor: whiteColor,
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(top: 10.h, right: 15.w),
+                child: Builder(
+                  builder: (context) => IconButton(
+                    icon: const Icon(Icons.menu, color: blackColor),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  ),
+                ),
+              ),
+            ],
+            flexibleSpace: Padding(
+              padding: EdgeInsets.only(
+                top: 50.h,
+                left: 20.w,
+                right: 20.w,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HomeAppBar(),
+                  SizedBox(height: 25.h),
+                  TaskSearchBar(
+                      onSearchChanged: taskProvider.updateSearchQuery),
+                ],
+              ),
+            ),
+          ),
         ),
-        endDrawer: HomeDrawer(),
+        endDrawer: const HomeDrawer(),
         endDrawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 100,
         drawerScrimColor: blackColor.withOpacity(0.3),
-        backgroundColor: bgColor,
         floatingActionButton: GestureDetector(
           onTap: () {
             showModalBottomSheet(
-                elevation: 10,
-                backgroundColor: bgColor,
-                showDragHandle: true,
-                isScrollControlled: true,
-                context: context,
-                builder: (context) => CustomBottomSheet(
-                      hintText: "Add task here...",
-                      text: "New Task",
-                      buttonText: "Add",
-                      controller: titleController,
-                      onPressed: () {
-                        final taskTitle = titleController.text;
-                        if (taskTitle.trim().isEmpty) return;
-                        taskProvider.addTask(taskTitle);
-                        titleController.clear();
-                        Navigator.of(context).pop();
-                      },
-                    ));
+              elevation: 10,
+              backgroundColor: bgColor,
+              showDragHandle: true,
+              isScrollControlled: true,
+              context: context,
+              builder: (context) => CustomBottomSheet(
+                hintText: "Add task here...",
+                text: "New Task",
+                buttonText: "Add",
+                controller: titleController,
+                onPressed: () {
+                  final taskTitle = titleController.text;
+                  if (taskTitle.trim().isEmpty) return;
+                  taskProvider.addTask(taskTitle);
+                  titleController.clear();
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
           },
           child: Container(
             height: 60.h,
             width: 60.w,
             decoration: BoxDecoration(
-                color: whiteColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: greyColor,
-                    offset: Offset(1, 1),
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                  )
-                ]),
-            child: Icon(
-              Icons.add,
-              color: blackColor,
-              size: 30.w,
+              color: whiteColor,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: greyColor,
+                  offset: const Offset(1, 1),
+                  blurRadius: 10,
+                )
+              ],
             ),
+            child: Icon(Icons.add, color: blackColor, size: 30.w),
           ),
         ),
         body: ListView(
-          padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
+          physics: const BouncingScrollPhysics(),
+          padding:
+              EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w, bottom: 90.h),
           children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              TaskSearchBar(
-                onSearchChanged: taskProvider.updateSearchQuery,
-              ),
-              SizedBox(height: 30.h),
-              TaskSubHeader(
-                ondeleteAll: taskProvider.deleteAllTasks,
-                taskCount: taskProvider.task.length,
-              ),
-              SizedBox(height: 40.h),
-              if (taskProvider.isLoading)
-                const Center(
-                    child: CircularProgressIndicator(color: blackColor))
-              else
-                ...taskProvider.task.map((task) => TaskListTile(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TaskSubHeader(
+                  ondeleteAll: taskProvider.deleteAllTasks,
+                  taskCount: taskProvider.task.length,
+                ),
+                SizedBox(height: 15.h),
+                if (taskProvider.isLoading)
+                  const Center(
+                      child: CircularProgressIndicator(color: blackColor))
+                else
+                  ...taskProvider.task.map(
+                    (task) => TaskListTile(
                       taskTitle: task['title'],
                       isCompleted: task['isCompleted'],
                       onStatusToggle: (value) {
@@ -114,8 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onEdit: (updatedTitle) {
                         taskProvider.editTask(task['id'], updatedTitle);
                       },
-                    ))
-            ])
+                    ),
+                  )
+              ],
+            )
           ],
         ),
       ),

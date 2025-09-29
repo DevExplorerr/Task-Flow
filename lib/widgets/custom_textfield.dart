@@ -11,6 +11,7 @@ class CustomTextfield extends StatelessWidget {
   final IconButton? suffixIcon;
   final bool? obsecureText;
   final int? maxLines;
+  final bool? autoFocus;
 
   const CustomTextfield({
     super.key,
@@ -21,6 +22,7 @@ class CustomTextfield extends StatelessWidget {
     required this.controller,
     required this.text,
     this.maxLines,
+    this.autoFocus,
   });
 
   @override
@@ -41,6 +43,7 @@ class CustomTextfield extends StatelessWidget {
         ),
         TextFormField(
           style: GoogleFonts.poppins(color: textColor),
+          autofocus: autoFocus ?? false,
           maxLines: maxLines ?? 1,
           keyboardType: keyboardType,
           controller: controller,

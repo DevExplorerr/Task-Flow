@@ -43,87 +43,90 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: bgColor,
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(left: Radius.circular(16.r)),
-      ),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: primaryButtonColor),
-            child: Center(
-              child: Text(
-                'Menu',
-                style: GoogleFonts.poppins(
-                  color: primaryButtonTextColor,
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.bold,
+    return Padding(
+      padding: EdgeInsets.only(left: 90.w),
+      child: Drawer(
+        backgroundColor: bgColor,
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(left: Radius.circular(16.r)),
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: primaryButtonColor),
+              child: Center(
+                child: Text(
+                  'Menu',
+                  style: GoogleFonts.poppins(
+                    color: primaryButtonTextColor,
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          Column(
-            children: [
-              Menu(
-                  text: 'Update Username',
-                  icon: Icons.person,
-                  press: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const UpdateUsernameScreen(),
-                      ),
-                    );
-                  }),
-              Menu(
-                  text: 'Update Password',
-                  icon: Icons.lock,
-                  press: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ChangePasswordScreen(),
-                      ),
-                    );
-                  }),
-              Menu(
-                  text: 'Delete Account',
-                  icon: Icons.delete_forever,
-                  press: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const DeleteAccountScreen(),
-                      ),
-                    );
-                  }),
-              Menu(
-                  text: 'Logout',
-                  icon: Icons.logout,
-                  press: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      animationStyle: AnimationStyle(
-                        curve: Curves.easeInQuart,
-                        duration: const Duration(milliseconds: 300),
-                        reverseDuration: const Duration(milliseconds: 200),
-                      ),
-                      builder: (context) => CustomConfirmationDialogbox(
-                        title: "Are you sure you want to logout?",
-                        buttonText: "Logout",
-                        onPressed: () {
-                          logout();
-                        },
-                      ),
-                    );
-                  }),
-            ],
-          ),
-        ],
+            Column(
+              children: [
+                Menu(
+                    text: 'Update Username',
+                    icon: Icons.person,
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const UpdateUsernameScreen(),
+                        ),
+                      );
+                    }),
+                Menu(
+                    text: 'Update Password',
+                    icon: Icons.lock,
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordScreen(),
+                        ),
+                      );
+                    }),
+                Menu(
+                    text: 'Delete Account',
+                    icon: Icons.delete_forever,
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const DeleteAccountScreen(),
+                        ),
+                      );
+                    }),
+                Menu(
+                    text: 'Logout',
+                    icon: Icons.logout,
+                    press: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        animationStyle: AnimationStyle(
+                          curve: Curves.easeInQuart,
+                          duration: const Duration(milliseconds: 300),
+                          reverseDuration: const Duration(milliseconds: 200),
+                        ),
+                        builder: (context) => CustomConfirmationDialogbox(
+                          title: "Are you sure you want to logout?",
+                          buttonText: "Logout",
+                          onPressed: () {
+                            logout();
+                          },
+                        ),
+                      );
+                    }),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

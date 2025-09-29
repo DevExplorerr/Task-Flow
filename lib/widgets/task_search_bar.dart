@@ -16,37 +16,30 @@ class _TaskSearchBarState extends State<TaskSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: TextField(
-            controller: searchController,
-            onChanged: widget.onSearchChanged,
-            decoration: InputDecoration(
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 14.0.h, horizontal: 16.0.w),
-              hintText: 'Search task',
-              hintStyle: GoogleFonts.podkova(
-                color: inputHintTextColor,
-                fontSize: 17.sp,
-              ),
-              suffixIcon: const Icon(Icons.search, color: inputIconColor),
-              filled: true,
-              fillColor: bgColor,
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: inputBorderColor),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: blackColor),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            style: GoogleFonts.podkova(color: textColor),
-          ),
+    return TextField(
+      controller: searchController,
+      onChanged: widget.onSearchChanged,
+      decoration: InputDecoration(
+        contentPadding:
+            EdgeInsets.symmetric(vertical: 14.0.h, horizontal: 16.0.w),
+        hintText: 'Search task',
+        hintStyle: GoogleFonts.podkova(
+          color: inputHintTextColor,
+          fontSize: 17.sp,
         ),
-      ],
+        suffixIcon: const Icon(Icons.search, color: inputIconColor),
+        filled: true,
+        fillColor: bgColor,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: inputBorderColor),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: blackColor),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+      ),
+      style: GoogleFonts.podkova(color: textColor),
     );
   }
 }
