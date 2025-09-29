@@ -112,43 +112,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            child: Icon(Icons.add, color: blackColor, size: 30.w),
+            child: const Icon(Icons.add, color: blackColor, size: 30),
           ),
         ),
-        body: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding:
-              EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w, bottom: 90.h),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TaskSubHeader(
-                  ondeleteAll: taskProvider.deleteAllTasks,
-                  taskCount: taskProvider.task.length,
+            TaskSubHeader(
+              ondeleteAll: taskProvider.deleteAllTasks,
+              taskCount: taskProvider.task.length,
+            ),
+            SizedBox(height: 5.h),
+            if (taskProvider.isLoading)
+              const Expanded(
+                  child: Center(
+                      child: CircularProgressIndicator(color: blackColor)))
+            else if (taskProvider.task.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.inbox, size: 80, color: greyColor),
+                      SizedBox(height: 15.h),
+                      Text(
+                        "No tasks yet",
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w500,
+                          color: greyColor,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        "Tap + to add your first task",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: greyColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 15.h),
-                if (taskProvider.isLoading)
-                  const Center(
-                      child: CircularProgressIndicator(color: blackColor))
-                else
-                  ...taskProvider.task.map(
-                    (task) => TaskListTile(
-                      taskTitle: task['title'],
-                      isCompleted: task['isCompleted'],
-                      onStatusToggle: (value) {
-                        taskProvider.toggleTaskStatus(task['id'], value);
-                      },
-                      onDelete: () {
-                        taskProvider.deleteTask(task['id']);
-                      },
-                      onEdit: (updatedTitle) {
-                        taskProvider.editTask(task['id'], updatedTitle);
-                      },
-                    ),
-                  )
-              ],
-            )
+              )
+            else
+              Expanded(
+                child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding:
+                        EdgeInsets.only(left: 20.w, right: 20.w, bottom: 90.h),
+                    itemCount: taskProvider.task.length,
+                    itemBuilder: (context, index) {
+                      final tasks = taskProvider.task[index];
+                      return TaskListTile(
+                        taskTitle: tasks['title'],
+                        isCompleted: tasks['isCompleted'],
+                        onStatusToggle: (value) {
+                          taskProvider.toggleTaskStatus(tasks['id'], value);
+                        },
+                        onDelete: () {
+                          taskProvider.deleteTask(tasks['id']);
+                        },
+                        onEdit: (updatedTitle) {
+                          taskProvider.editTask(tasks['id'], updatedTitle);
+                        },
+                      );
+                    }),
+              )
           ],
         ),
       ),
