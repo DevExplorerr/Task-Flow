@@ -157,7 +157,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
-            color: blackColor.withOpacity(0.2),
+            color: blackColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8.r)),
         child: Row(children: [
           const Icon(

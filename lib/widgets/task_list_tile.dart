@@ -70,7 +70,7 @@ class _TaskListTileState extends State<TaskListTile> {
                       ? listViewCompletedTextColor
                       : textColor,
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                   decoration: widget.isCompleted
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
@@ -93,6 +93,8 @@ class _TaskListTileState extends State<TaskListTile> {
                   Text(
                     DateFormat("MM/d, hh:mm a").format(sele),
                     style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       color: widget.isCompleted
                           ? listViewCompletedTextColor
                           : textColor,
