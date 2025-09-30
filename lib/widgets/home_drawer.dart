@@ -33,8 +33,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
     try {
       await authservice.value.logout();
       showToast(message: "Logged out successfully");
-      await Future.delayed(const Duration(seconds: 1));
       Navigator.pop(context);
+      await Future.delayed(const Duration(seconds: 1));
       navigateToLoginScreen();
     } on FirebaseAuthException catch (e) {
       showToast(message: e.message.toString());

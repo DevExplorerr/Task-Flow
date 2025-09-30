@@ -104,7 +104,7 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
                     "Update username",
                     style: GoogleFonts.poppins(
                       color: blackColor,
-                      fontSize: 28,
+                      fontSize: 28.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

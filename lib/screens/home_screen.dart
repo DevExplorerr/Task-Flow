@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(165.h),
           child: AppBar(
+            automaticallyImplyLeading: false,
             elevation: 0,
             scrolledUnderElevation: 0,
             backgroundColor: whiteColor,

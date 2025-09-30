@@ -24,7 +24,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   final TextEditingController currentPasswordController =
       TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
