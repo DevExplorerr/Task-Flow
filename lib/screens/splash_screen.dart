@@ -37,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 180.h,
             width: double.infinity,
             fit: BoxFit.fill,
+            filterQuality: FilterQuality.high,
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),

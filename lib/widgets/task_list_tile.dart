@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:task_management_app/widgets/custom_bottom_sheet.dart';
 import 'colors.dart';
 
@@ -23,6 +24,7 @@ class TaskListTile extends StatefulWidget {
 }
 
 class _TaskListTileState extends State<TaskListTile> {
+  DateTime sele = DateTime.now();
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller =
@@ -58,19 +60,50 @@ class _TaskListTileState extends State<TaskListTile> {
                       controller: controller,
                     ));
           },
-          child: Text(
-            widget.taskTitle,
-            style: GoogleFonts.poppins(
-              color:
-                  widget.isCompleted ? listViewCompletedTextColor : textColor,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              decoration: widget.isCompleted
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.taskTitle,
+                style: GoogleFonts.poppins(
+                  color: widget.isCompleted
+                      ? listViewCompletedTextColor
+                      : textColor,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                  decoration: widget.isCompleted
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 5),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  widget.isCompleted
+                      ? const SizedBox.shrink()
+                      : Icon(
+                          Icons.alarm,
+                          color: Colors.red[300],
+                          size: 20.sp,
+                        ),
+                  const SizedBox(width: 5),
+                  Text(
+                    DateFormat("MM/d, hh:mm a").format(sele),
+                    style: GoogleFonts.poppins(
+                      color: widget.isCompleted
+                          ? listViewCompletedTextColor
+                          : textColor,
+                      decoration: widget.isCompleted
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
         ),
         leading: IconButton(
