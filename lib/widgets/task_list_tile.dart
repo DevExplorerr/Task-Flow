@@ -73,6 +73,7 @@ class _TaskListTileState extends State<TaskListTile> {
                           Navigator.pop(context);
                         }
                       },
+                      initialReminder: reminderDateTime,
                       onReminderSelected: (dateTime) {
                         setState(() {
                           reminderDateTime = dateTime;
@@ -101,13 +102,16 @@ class _TaskListTileState extends State<TaskListTile> {
               const SizedBox(height: 5),
               if (reminderDateTime != null)
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.alarm,
-                      color: Colors.red[300],
-                      size: 20.sp,
-                    ),
+                    widget.isCompleted
+                        ? const SizedBox.shrink()
+                        : Icon(
+                            Icons.alarm,
+                            color: Colors.red[300],
+                            size: 20.sp,
+                          ),
                     const SizedBox(width: 5),
                     Text(
                       DateFormat("MM/d, hh:mm a").format(reminderDateTime!),

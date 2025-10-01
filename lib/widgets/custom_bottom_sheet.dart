@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'custom_button.dart';
+import 'custom_textfield.dart';
 
 class CustomBottomSheet extends StatefulWidget {
   final String hintText;
@@ -16,6 +16,9 @@ class CustomBottomSheet extends StatefulWidget {
   final VoidCallback onPressed;
   final TextEditingController controller;
   final ValueChanged<DateTime?> onReminderSelected;
+
+  final DateTime? initialReminder;
+
   const CustomBottomSheet({
     super.key,
     required this.hintText,
@@ -24,6 +27,7 @@ class CustomBottomSheet extends StatefulWidget {
     required this.onPressed,
     required this.controller,
     required this.onReminderSelected,
+    this.initialReminder,
   });
 
   @override
@@ -32,6 +36,13 @@ class CustomBottomSheet extends StatefulWidget {
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
   DateTime? _selectedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDateTime = widget.initialReminder;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -66,20 +77,56 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     reminder(context),
                     SizedBox(width: 10.w),
                     CustomButton(
-                        buttonColor: primaryButtonColor,
-                        buttonText: widget.buttonText,
-                        buttonTextColor: primaryButtonTextColor,
-                        fontSize: 14.sp,
-                        onPressed: () {
-                          widget.onPressed();
-                          widget.onReminderSelected(_selectedDateTime);
-                        }),
+                      buttonColor: primaryButtonColor,
+                      buttonText: widget.buttonText,
+                      buttonTextColor: primaryButtonTextColor,
+                      fontSize: 14.sp,
+                      onPressed: () {
+                        widget.onPressed();
+                        widget.onReminderSelected(_selectedDateTime);
+                      },
+                    ),
                   ],
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget reminder(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showDateTimePicker(context),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+            color: blackColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8.r)),
+        child: Row(children: [
+          const Icon(Icons.alarm, color: blackColor, size: 20),
+          const SizedBox(width: 5),
+          Text(
+            _selectedDateTime != null
+                ? DateFormat("MM/d, hh:mm a").format(_selectedDateTime!)
+                : "Add Reminder",
+            style: GoogleFonts.poppins(
+                color: textColor, fontWeight: FontWeight.w500, fontSize: 12.sp),
+          ),
+          const SizedBox(width: 8),
+          _selectedDateTime != null
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedDateTime = null;
+                    });
+                    // widget.onReminderSelected(null);
+                  },
+                  child: const Icon(Icons.cancel, color: blackColor),
+                )
+              : const SizedBox.shrink()
+        ]),
       ),
     );
   }
@@ -106,7 +153,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                 height: 250.h,
                 child: CupertinoDatePicker(
                   mode: CupertinoDatePickerMode.dateAndTime,
-                  initialDateTime: DateTime.now(),
+                  initialDateTime: _selectedDateTime ?? DateTime.now(),
                   use24hFormat: false,
                   onDateTimeChanged: (DateTime newDateTime) {
                     selectedDateTime = newDateTime;
@@ -135,7 +182,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         setState(() {
                           _selectedDateTime = selectedDateTime;
                         });
-                        widget.onReminderSelected(_selectedDateTime);
+                        // widget.onReminderSelected(_selectedDateTime);
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -154,48 +201,6 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           ),
         );
       },
-    );
-  }
-
-  Widget reminder(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showDateTimePicker(context),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-            color: blackColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8.r)),
-        child: Row(children: [
-          const Icon(
-            Icons.alarm,
-            color: blackColor,
-            size: 20,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            _selectedDateTime == null
-                ? "Add Reminder"
-                : DateFormat("MM/d, hh:mm a").format(_selectedDateTime!),
-            style: GoogleFonts.poppins(
-                color: textColor, fontWeight: FontWeight.w500, fontSize: 12.sp),
-          ),
-          const SizedBox(width: 8),
-          _selectedDateTime != null
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedDateTime = null;
-                    });
-                    widget.onReminderSelected(null);
-                  },
-                  child: Icon(
-                    Icons.cancel,
-                    color: blackColor,
-                  ),
-                )
-              : const SizedBox.shrink()
-        ]),
-      ),
     );
   }
 }
