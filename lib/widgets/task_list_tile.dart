@@ -11,24 +11,39 @@ class TaskListTile extends StatefulWidget {
   final ValueChanged<String> onEdit;
   final bool isCompleted;
   final ValueChanged<bool> onStatusToggle;
+  final DateTime? reminderDateTime;
   const TaskListTile(
       {super.key,
       required this.taskTitle,
       required this.onDelete,
       required this.onEdit,
       required this.isCompleted,
-      required this.onStatusToggle});
+      required this.onStatusToggle,
+      this.reminderDateTime});
 
   @override
   State<TaskListTile> createState() => _TaskListTileState();
 }
 
 class _TaskListTileState extends State<TaskListTile> {
-  DateTime sele = DateTime.now();
+  DateTime? reminderDateTime;
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.taskTitle);
+    reminderDateTime = widget.reminderDateTime;
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller =
-        TextEditingController(text: widget.taskTitle);
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6.h),
       decoration: BoxDecoration(
@@ -51,13 +66,18 @@ class _TaskListTileState extends State<TaskListTile> {
                       hintText: 'Edit your task...',
                       text: 'Edit Task',
                       buttonText: 'Save',
+                      controller: controller,
                       onPressed: () {
                         if (controller.text.trim().isNotEmpty) {
                           widget.onEdit(controller.text.trim());
                           Navigator.pop(context);
                         }
                       },
-                      controller: controller,
+                      onReminderSelected: (dateTime) {
+                        setState(() {
+                          reminderDateTime = dateTime;
+                        });
+                      },
                     ));
           },
           child: Column(
@@ -79,32 +99,31 @@ class _TaskListTileState extends State<TaskListTile> {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 5),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  widget.isCompleted
-                      ? const SizedBox.shrink()
-                      : Icon(
-                          Icons.alarm,
-                          color: Colors.red[300],
-                          size: 20.sp,
-                        ),
-                  const SizedBox(width: 5),
-                  Text(
-                    DateFormat("MM/d, hh:mm a").format(sele),
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: widget.isCompleted
-                          ? listViewCompletedTextColor
-                          : textColor,
-                      decoration: widget.isCompleted
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
+              if (reminderDateTime != null)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.alarm,
+                      color: Colors.red[300],
+                      size: 20.sp,
                     ),
-                  )
-                ],
-              ),
+                    const SizedBox(width: 5),
+                    Text(
+                      DateFormat("MM/d, hh:mm a").format(reminderDateTime!),
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: widget.isCompleted
+                            ? listViewCompletedTextColor
+                            : textColor,
+                        decoration: widget.isCompleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

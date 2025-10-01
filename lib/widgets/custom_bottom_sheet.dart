@@ -15,6 +15,7 @@ class CustomBottomSheet extends StatefulWidget {
   final String buttonText;
   final VoidCallback onPressed;
   final TextEditingController controller;
+  final ValueChanged<DateTime?> onReminderSelected;
   const CustomBottomSheet({
     super.key,
     required this.hintText,
@@ -22,6 +23,7 @@ class CustomBottomSheet extends StatefulWidget {
     required this.buttonText,
     required this.onPressed,
     required this.controller,
+    required this.onReminderSelected,
   });
 
   @override
@@ -68,7 +70,10 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         buttonText: widget.buttonText,
                         buttonTextColor: primaryButtonTextColor,
                         fontSize: 14.sp,
-                        onPressed: widget.onPressed),
+                        onPressed: () {
+                          widget.onPressed();
+                          widget.onReminderSelected(_selectedDateTime);
+                        }),
                   ],
                 ),
               ],
@@ -130,6 +135,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         setState(() {
                           _selectedDateTime = selectedDateTime;
                         });
+                        widget.onReminderSelected(_selectedDateTime);
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -180,6 +186,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     setState(() {
                       _selectedDateTime = null;
                     });
+                    widget.onReminderSelected(null);
                   },
                   child: Icon(
                     Icons.cancel,

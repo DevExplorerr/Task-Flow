@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController titleController = TextEditingController();
+  DateTime? reminderDateTime;
 
   @override
   void dispose() {
@@ -92,9 +94,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   final taskTitle = titleController.text;
                   if (taskTitle.trim().isEmpty) return;
-                  taskProvider.addTask(taskTitle);
+                  taskProvider.addTask(taskTitle, reminder: reminderDateTime);
                   titleController.clear();
+                  reminderDateTime = null;
                   Navigator.of(context).pop();
+                },
+                onReminderSelected: (dateTime) {
+                  setState(() {
+                    reminderDateTime = dateTime;
+                  });
                 },
               ),
             );
@@ -168,6 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       return TaskListTile(
                         taskTitle: tasks['title'],
                         isCompleted: tasks['isCompleted'],
+                        reminderDateTime: tasks['reminder'] != null
+                            ? (tasks['reminder'] as Timestamp).toDate()
+                            : null,
                         onStatusToggle: (value) {
                           taskProvider.toggleTaskStatus(tasks['id'], value);
                         },
@@ -175,7 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           taskProvider.deleteTask(tasks['id']);
                         },
                         onEdit: (updatedTitle) {
-                          taskProvider.editTask(tasks['id'], updatedTitle);
+                          taskProvider.editTask(tasks['id'], updatedTitle,
+                              newReminder: reminderDateTime);
                         },
                       );
                     }),

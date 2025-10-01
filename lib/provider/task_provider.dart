@@ -9,6 +9,7 @@ class TaskProvider extends ChangeNotifier {
   bool _isLoading = true;
 
   bool get isLoading => _isLoading;
+
   List<Map<String, dynamic>> get task {
     if (_searchQuery.isEmpty) return tasks;
     return tasks
@@ -25,6 +26,7 @@ class TaskProvider extends ChangeNotifier {
         .collection('users')
         .doc(uid)
         .collection('tasks')
+        .orderBy('createdAt', descending: true)
         .get();
 
     tasks = snapshot.docs.map((doc) {
@@ -32,6 +34,7 @@ class TaskProvider extends ChangeNotifier {
         'id': doc.id,
         'title': doc['title'],
         'isCompleted': doc['isCompleted'],
+        'reminder': doc['reminder'],
       };
     }).toList();
     _isLoading = false;
@@ -39,7 +42,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
 //Add Task
-  Future<void> addTask(String taskTitle) async {
+  Future<void> addTask(String taskTitle, {DateTime? reminder}) async {
     final taskRef = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -47,13 +50,39 @@ class TaskProvider extends ChangeNotifier {
         .add({
       'title': taskTitle,
       'isCompleted': false,
+      'createdAt': FieldValue.serverTimestamp(),
+      'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
     });
 
     tasks.add({
       'id': taskRef.id,
       'title': taskTitle,
       'isCompleted': false,
+      'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
     });
+    notifyListeners();
+  }
+
+  //Edit Task
+  Future<void> editTask(String taskId, String newTitle,
+      {DateTime? newReminder}) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tasks')
+        .doc(taskId)
+        .update({
+      'title': newTitle,
+      if (newReminder != null) 'reminder': Timestamp.fromDate(newReminder)
+    });
+
+    final index = tasks.indexWhere((task) => task['id'] == taskId);
+    if (index != -1) {
+      tasks[index]['title'] = newTitle;
+      if (newReminder != null) {
+        tasks[index]['reminder'] = Timestamp.fromDate(newReminder);
+      }
+    }
     notifyListeners();
   }
 
@@ -85,22 +114,6 @@ class TaskProvider extends ChangeNotifier {
     await batch.commit();
 
     tasks.clear();
-    notifyListeners();
-  }
-
-//Edit Task
-  Future<void> editTask(String taskId, String newTitle) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('tasks')
-        .doc(taskId)
-        .update({'title': newTitle});
-
-    final index = tasks.indexWhere((task) => task['id'] == taskId);
-    if (index != -1) {
-      tasks[index]['title'] = newTitle;
-    }
     notifyListeners();
   }
 
