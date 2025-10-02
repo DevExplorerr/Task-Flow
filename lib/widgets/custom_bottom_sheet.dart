@@ -121,7 +121,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     setState(() {
                       _selectedDateTime = null;
                     });
-                    // widget.onReminderSelected(null);
+                    widget.onReminderSelected(null);
                   },
                   child: const Icon(Icons.cancel, color: blackColor),
                 )
@@ -182,7 +182,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         setState(() {
                           _selectedDateTime = selectedDateTime;
                         });
-                        // widget.onReminderSelected(_selectedDateTime);
+                        widget.onReminderSelected(_selectedDateTime);
                         Navigator.pop(context);
                       },
                       child: Text(

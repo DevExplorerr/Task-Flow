@@ -8,7 +8,7 @@ import 'colors.dart';
 class TaskListTile extends StatefulWidget {
   final String taskTitle;
   final VoidCallback onDelete;
-  final ValueChanged<String> onEdit;
+  final void Function(String newTitle, DateTime? newReminder) onEdit;
   final bool isCompleted;
   final ValueChanged<bool> onStatusToggle;
   final DateTime? reminderDateTime;
@@ -69,7 +69,8 @@ class _TaskListTileState extends State<TaskListTile> {
                       controller: controller,
                       onPressed: () {
                         if (controller.text.trim().isNotEmpty) {
-                          widget.onEdit(controller.text.trim());
+                          widget.onEdit(
+                              controller.text.trim(), reminderDateTime);
                           Navigator.pop(context);
                         }
                       },

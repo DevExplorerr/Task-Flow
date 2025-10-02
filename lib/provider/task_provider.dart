@@ -73,15 +73,14 @@ class TaskProvider extends ChangeNotifier {
         .doc(taskId)
         .update({
       'title': newTitle,
-      if (newReminder != null) 'reminder': Timestamp.fromDate(newReminder)
+      'reminder': newReminder != null ? Timestamp.fromDate(newReminder) : null,
     });
 
     final index = tasks.indexWhere((task) => task['id'] == taskId);
     if (index != -1) {
       tasks[index]['title'] = newTitle;
-      if (newReminder != null) {
-        tasks[index]['reminder'] = Timestamp.fromDate(newReminder);
-      }
+      tasks[index]['reminder'] =
+          newReminder != null ? Timestamp.fromDate(newReminder) : null;
     }
     notifyListeners();
   }

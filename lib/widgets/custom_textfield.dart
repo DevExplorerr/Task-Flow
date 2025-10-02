@@ -21,7 +21,7 @@ class CustomTextfield extends StatelessWidget {
     this.obsecureText,
     required this.controller,
     required this.text,
-    this.maxLines,
+    this.maxLines = 1,
     this.autoFocus,
   });
 
@@ -44,7 +44,7 @@ class CustomTextfield extends StatelessWidget {
         TextFormField(
           style: GoogleFonts.poppins(color: textColor),
           autofocus: autoFocus ?? false,
-          maxLines: maxLines ?? 1,
+          maxLines: maxLines,
           keyboardType: keyboardType,
           controller: controller,
           textInputAction: TextInputAction.next,

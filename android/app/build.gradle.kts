@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.devexplorerr.task_flow"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

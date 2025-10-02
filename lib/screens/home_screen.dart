@@ -96,7 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (taskTitle.trim().isEmpty) return;
                   taskProvider.addTask(taskTitle, reminder: reminderDateTime);
                   titleController.clear();
-                  reminderDateTime = null;
                   Navigator.of(context).pop();
                 },
                 onReminderSelected: (dateTime) {
@@ -185,9 +184,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         onDelete: () {
                           taskProvider.deleteTask(tasks['id']);
                         },
-                        onEdit: (updatedTitle) {
+                        onEdit: (updatedTitle, updateReminder) {
                           taskProvider.editTask(tasks['id'], updatedTitle,
-                              newReminder: reminderDateTime);
+                              newReminder: updateReminder);
                         },
                       );
                     }),
