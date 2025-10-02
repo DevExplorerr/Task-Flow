@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/service/auth_service.dart';
+import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/screens/login_screen.dart';
 import 'package:task_management_app/widgets/colors.dart';
 import 'package:task_management_app/screens/home_screen.dart';

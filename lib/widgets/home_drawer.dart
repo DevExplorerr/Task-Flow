@@ -9,7 +9,7 @@ import 'package:task_management_app/screens/change_password_screen.dart';
 import 'package:task_management_app/screens/delete_account_screen.dart';
 import 'package:task_management_app/screens/login_screen.dart';
 import 'package:task_management_app/screens/update_username_screen.dart';
-import 'package:task_management_app/service/auth_service.dart';
+import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
 import 'package:task_management_app/widgets/custom_confirmation_dialogbox.dart';
 import 'package:task_management_app/widgets/menu.dart';
