@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_management_app/services/notification_service.dart';
 
 class TaskProvider extends ChangeNotifier {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -43,35 +44,46 @@ class TaskProvider extends ChangeNotifier {
 
 //Add Task
   Future<void> addTask(String taskTitle, {DateTime? reminder}) async {
-    final taskRef = await FirebaseFirestore.instance
+    final col = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .collection('tasks')
-        .add({
+        .collection('tasks');
+
+    final docRef = await col.add({
       'title': taskTitle,
       'isCompleted': false,
       'createdAt': FieldValue.serverTimestamp(),
       'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
     });
 
-    tasks.add({
-      'id': taskRef.id,
+    tasks.insert(0, {
+      'id': docRef.id,
       'title': taskTitle,
       'isCompleted': false,
       'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
     });
+
+    if (reminder != null) {
+      await NotificationService.scheduleNotification(
+          taskId: docRef.id,
+          title: "Task Reminder",
+          body: taskTitle,
+          scheduledTime: reminder);
+    }
+
     notifyListeners();
   }
 
   //Edit Task
   Future<void> editTask(String taskId, String newTitle,
       {DateTime? newReminder}) async {
-    await FirebaseFirestore.instance
+    final docRef = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('tasks')
-        .doc(taskId)
-        .update({
+        .doc(taskId);
+
+    await docRef.update({
       'title': newTitle,
       'reminder': newReminder != null ? Timestamp.fromDate(newReminder) : null,
     });
@@ -82,8 +94,18 @@ class TaskProvider extends ChangeNotifier {
       tasks[index]['reminder'] =
           newReminder != null ? Timestamp.fromDate(newReminder) : null;
     }
+
+    await NotificationService.cancelNotification(taskId);
+    if (newReminder != null) {
+      await NotificationService.scheduleNotification(
+          taskId: taskId,
+          title: 'Task Reminder',
+          body: newTitle,
+          scheduledTime: newReminder);
+    }
     notifyListeners();
   }
+
 
 //Delete Task
   Future<void> deleteTask(String taskId) async {
@@ -95,6 +117,9 @@ class TaskProvider extends ChangeNotifier {
         .delete();
 
     tasks.removeWhere((task) => task['id'] == taskId);
+
+    //cancel reminder notification if task is deleted
+    await NotificationService.cancelNotification(taskId);
     notifyListeners();
   }
 
@@ -138,3 +163,65 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+
+  // Future<void> addTask(String taskTitle, {DateTime? reminder}) async {
+  //   final taskRef = await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(uid)
+  //       .collection('tasks')
+  //       .add({
+  //     'title': taskTitle,
+  //     'isCompleted': false,
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //     'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
+  //   });
+
+  //   tasks.add({
+  //     'id': taskRef.id,
+  //     'title': taskTitle,
+  //     'isCompleted': false,
+  //     'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
+  //   });
+
+  //   //schedule notification if reminder is set
+  //   if (reminder != null) {
+  //     await NotificationService.scheduleNotification(
+  //         taskId: taskRef.id,
+  //         title: "Task Reminder",
+  //         body: taskTitle,
+  //         scheduledTime: reminder);
+  //   }
+  //   notifyListeners();
+  // }
+
+    // Future<void> editTask(String taskId, String newTitle,
+  //     {DateTime? newReminder}) async {
+  //   await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(uid)
+  //       .collection('tasks')
+  //       .doc(taskId)
+  //       .update({
+  //     'title': newTitle,
+  //     'reminder': newReminder != null ? Timestamp.fromDate(newReminder) : null,
+  //   });
+
+  //   final index = tasks.indexWhere((task) => task['id'] == taskId);
+  //   if (index != -1) {
+  //     tasks[index]['title'] = newTitle;
+  //     tasks[index]['reminder'] =
+  //         newReminder != null ? Timestamp.fromDate(newReminder) : null;
+  //   }
+
+  //   //cancel previous and reschedule notification
+  //   await NotificationService.cancelNotification(taskId);
+  //   if (newReminder != null) {
+  //     await NotificationService.scheduleNotification(
+  //         taskId: taskId,
+  //         title: "Task Reminder",
+  //         body: newTitle,
+  //         scheduledTime: newReminder);
+  //   }
+  //   notifyListeners();
+  // }

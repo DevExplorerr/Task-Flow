@@ -76,12 +76,26 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   children: [
                     reminder(context),
                     SizedBox(width: 10.w),
+                    // CustomButton(
+                    //   buttonColor: primaryButtonColor,
+                    //   buttonText: widget.buttonText,
+                    //   buttonTextColor: primaryButtonTextColor,
+                    //   fontSize: 14.sp,
+                    //   onPressed: () async {
+                    //     await NotificationService.scheduleNotification(
+                    //         taskId: "1",
+                    //         title: "Test",
+                    //         body: "Schedule Notification",
+                    //         scheduledTime: DateTime.now());
+                    //   },
+                    // ),
                     CustomButton(
                       buttonColor: primaryButtonColor,
                       buttonText: widget.buttonText,
                       buttonTextColor: primaryButtonTextColor,
                       fontSize: 14.sp,
                       onPressed: () {
+                        //task & reminder saved in firestore
                         widget.onPressed();
                         widget.onReminderSelected(_selectedDateTime);
                       },

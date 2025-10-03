@@ -10,10 +10,12 @@ import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/provider/task_provider.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/screens/splash_screen.dart';
+import 'package:task_management_app/services/notification_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
