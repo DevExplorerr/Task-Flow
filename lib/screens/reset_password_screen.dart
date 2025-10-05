@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/global/toast.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/login_screen.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
@@ -52,7 +52,9 @@ class _ResetPasswordState extends State<ResetPassword>
         isLoading = true;
       });
       await authservice.value.resetPassword(email: emailController.text);
-      showToast(message: "Reset link sent check your email");
+      showFloatingSnackBar(context,
+          message: "Reset link sent check your email",
+          backgroundColor: successColor);
 
       Future.delayed(const Duration(seconds: 1), () {
         Navigator.pushReplacement(
@@ -61,7 +63,9 @@ class _ResetPasswordState extends State<ResetPassword>
         );
       });
     } on FirebaseAuthException catch (e) {
-      showToast(message: e.message ?? "An error occured");
+      showFloatingSnackBar(context,
+          message: e.message ?? "An error occured",
+          backgroundColor: errorColor);
     }
     setState(() {
       isLoading = false;

@@ -5,6 +5,8 @@ const Color blackColor = Color(0xff000000);
 const Color whiteColor = Color(0xffFFFFFF);
 const Color greyColor = Color(0xff808080);
 const Color bgColor = Color(0xffFFFFFF);
+const Color successColor = Color(0xff53a653);
+const Color errorColor = Color(0xffB00020);
 
 // Button Colors
 const Color primaryButtonColor = Color(0xff2C2C2C);

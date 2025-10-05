@@ -53,7 +53,7 @@ class NotificationService {
           : scheduleDate,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
     );
   }
 

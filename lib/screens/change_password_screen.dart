@@ -1,7 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/global/toast.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
@@ -51,10 +53,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
         newPassword: newPasswordController.text,
         email: emailController.text,
       );
-      showToast(message: "Password Changed Successfully");
+      showFloatingSnackBar(context,
+          message: "Password Changed Successfully",
+          backgroundColor: successColor);
       navigateToHomeScreen();
     } catch (e) {
-      showToast(message: "Password Change Failed");
+      showFloatingSnackBar(context,
+          message: "Password Change Failed", backgroundColor: errorColor);
     }
     setState(() {
       isLoading = false;

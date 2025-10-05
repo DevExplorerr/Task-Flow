@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/reset_password_screen.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/screens/signup_screen.dart';
 import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/global/toast.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/widgets/custom_button.dart';
 import 'package:task_management_app/widgets/custom_textfield.dart';
@@ -51,19 +51,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
       await authservice.value.login(
           email: _emailController.text, password: _passwordController.text);
-      showToast(message: "Login successfully");
+      showFloatingSnackBar(context,
+          message: "Login successfully", backgroundColor: successColor);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        showToast(message: "Invalid email or password.");
+        showFloatingSnackBar(context,
+            message: "Invalid email or password.", backgroundColor: errorColor);
       } else {
-        showToast(message: "Error: ${e.code}");
+        showFloatingSnackBar(context,
+            message: "Error: ${e.code}", backgroundColor: errorColor);
       }
     } catch (e) {
-      showToast(message: "Unexpected error occurred.");
+      showFloatingSnackBar(context,
+          message: "Unexpected error occurred.", backgroundColor: errorColor);
     }
 
     setState(() => isLoading = false);

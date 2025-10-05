@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/global/toast.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/login_screen.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
@@ -66,13 +66,16 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
         email: emailController.text,
         password: passwordController.text,
       );
-      showToast(message: "Account deleted successfully");
+      showFloatingSnackBar(context,
+          message: "Account deleted successfully",
+          backgroundColor: successColor);
 
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pop(context);
       navigateToLoginScreen();
     } on FirebaseAuthException catch (e) {
-      showToast(message: e.message.toString());
+      showFloatingSnackBar(context,
+          message: e.message.toString(), backgroundColor: errorColor);
       setState(() {
         isLoading = false;
       });

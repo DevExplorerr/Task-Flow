@@ -1,7 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/global/toast.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
@@ -43,13 +45,18 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
       });
       await authservice.value.updateUsername(userName: userNameController.text);
       if (userNameController.text.isNotEmpty) {
-        showToast(message: "Username Changed Successfully");
+        showFloatingSnackBar(context,
+            message: "Username Changed Successfully",
+            backgroundColor: successColor);
         navigateToHomeScreen();
       } else {
-        showToast(message: "Please enter a valid username");
+        showFloatingSnackBar(context,
+            message: "Please enter a valid username",
+            backgroundColor: errorColor);
       }
     } catch (e) {
-      showToast(message: "Username Change Failed");
+      showFloatingSnackBar(context,
+          message: "Username Change Failed", backgroundColor: errorColor);
       setState(() {
         isLoading = false;
       });

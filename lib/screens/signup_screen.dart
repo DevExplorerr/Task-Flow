@@ -5,14 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/services/auth_service.dart';
 import 'package:task_management_app/screens/login_screen.dart';
 import 'package:task_management_app/widgets/colors.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/widgets/custom_button.dart';
 import 'package:task_management_app/widgets/custom_textfield.dart';
-import '../global/toast.dart';
-
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -58,17 +57,25 @@ class _SignupScreenState extends State<SignupScreen> {
           email: _emailController.text,
           password: _passwordController.text,
           userName: _usernameController.text);
-      showToast(message: "Registration successful");
+          showFloatingSnackBar(context,
+          message: "Registration successful",
+          backgroundColor: successColor);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        showToast(message: "The email address is already in use.");
+        showFloatingSnackBar(context,
+          message: "The email address is already in use.",
+          backgroundColor: errorColor);
       } else {
-        showToast(message: "Error: ${e.code}");
+        showFloatingSnackBar(context,
+          message: "Error: ${e.code}",
+          backgroundColor: errorColor);
       }
     } catch (e) {
-      showToast(message: "Unexpected error occurred.");
+      showFloatingSnackBar(context,
+          message: "Unexpected error occurred.",
+          backgroundColor: errorColor);
     }
     setState(() {
       isLoading = false;

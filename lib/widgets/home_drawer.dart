@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/global/toast.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/screens/change_password_screen.dart';
 import 'package:task_management_app/screens/delete_account_screen.dart';
 import 'package:task_management_app/screens/login_screen.dart';
@@ -32,12 +32,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
   void logout() async {
     try {
       await authservice.value.logout();
-      showToast(message: "Logged out successfully");
+      showFloatingSnackBar(context,
+          message: "Logged out successfully", backgroundColor: successColor);
       Navigator.pop(context);
       await Future.delayed(const Duration(seconds: 1));
       navigateToLoginScreen();
     } on FirebaseAuthException catch (e) {
-      showToast(message: e.message.toString());
+      showFloatingSnackBar(context,
+          message: e.message.toString(), backgroundColor: errorColor);
     }
   }
 
