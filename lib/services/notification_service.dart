@@ -37,18 +37,23 @@ class NotificationService {
       channelDescription: 'Task Reminder Notifications',
       importance: Importance.max,
       priority: Priority.high,
+      enableVibration: true,
+      playSound: true,
     );
 
     final notificationDetails = NotificationDetails(android: androidDetails);
+    final scheduleDate = tz.TZDateTime.from(scheduledTime, tz.local);
 
     await _notificationsPlugin.zonedSchedule(
       taskId.hashCode,
       title,
       body,
-      tz.TZDateTime.from(scheduledTime, tz.local),
+      scheduleDate.isBefore(tz.TZDateTime.now(tz.local))
+          ? tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5))
+          : scheduleDate,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 

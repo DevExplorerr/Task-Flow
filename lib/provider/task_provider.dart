@@ -106,7 +106,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
 //Delete Task
   Future<void> deleteTask(String taskId) async {
     await FirebaseFirestore.instance

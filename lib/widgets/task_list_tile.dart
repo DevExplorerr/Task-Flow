@@ -11,8 +11,8 @@ class TaskListTile extends StatefulWidget {
   final void Function(String newTitle, DateTime? newReminder) onEdit;
   final bool isCompleted;
   final ValueChanged<bool> onStatusToggle;
-  final DateTime? reminderDateTime;
-  const TaskListTile(
+  DateTime? reminderDateTime;
+  TaskListTile(
       {super.key,
       required this.taskTitle,
       required this.onDelete,
@@ -26,14 +26,12 @@ class TaskListTile extends StatefulWidget {
 }
 
 class _TaskListTileState extends State<TaskListTile> {
-  DateTime? reminderDateTime;
   late TextEditingController controller;
 
   @override
   void initState() {
     super.initState();
     controller = TextEditingController(text: widget.taskTitle);
-    reminderDateTime = widget.reminderDateTime;
   }
 
   @override
@@ -70,14 +68,14 @@ class _TaskListTileState extends State<TaskListTile> {
                       onPressed: () {
                         if (controller.text.trim().isNotEmpty) {
                           widget.onEdit(
-                              controller.text.trim(), reminderDateTime);
+                              controller.text.trim(), widget.reminderDateTime);
                           Navigator.pop(context);
                         }
                       },
-                      initialReminder: reminderDateTime,
+                      initialReminder: widget.reminderDateTime,
                       onReminderSelected: (dateTime) {
                         setState(() {
-                          reminderDateTime = dateTime;
+                          widget.reminderDateTime = dateTime;
                         });
                       },
                     ));
@@ -101,7 +99,7 @@ class _TaskListTileState extends State<TaskListTile> {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 5),
-              if (reminderDateTime != null)
+              if (widget.reminderDateTime != null)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,7 +113,8 @@ class _TaskListTileState extends State<TaskListTile> {
                           ),
                     const SizedBox(width: 5),
                     Text(
-                      DateFormat("MM/d, hh:mm a").format(reminderDateTime!),
+                      DateFormat("MM/d, hh:mm a")
+                          .format(widget.reminderDateTime!),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,

@@ -16,7 +16,6 @@ class CustomBottomSheet extends StatefulWidget {
   final VoidCallback onPressed;
   final TextEditingController controller;
   final ValueChanged<DateTime?> onReminderSelected;
-
   final DateTime? initialReminder;
 
   const CustomBottomSheet({
