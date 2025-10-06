@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/provider/task_provider.dart';
+import 'package:task_management_app/services/notification_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
 import 'package:task_management_app/widgets/custom_bottom_sheet.dart';
 import 'package:task_management_app/widgets/home_app_bar.dart';
@@ -28,6 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     titleController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await NotificationService.checkAndRequestPermission(context);
+    });
   }
 
   @override
