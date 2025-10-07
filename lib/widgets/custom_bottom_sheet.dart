@@ -68,6 +68,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
                   autoFocus: true,
+                  textInputAction: TextInputAction.newline,
                 ),
                 SizedBox(height: 20.h),
                 Row(

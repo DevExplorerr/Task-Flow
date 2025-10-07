@@ -124,6 +124,7 @@ class _ResetPasswordState extends State<ResetPassword>
                     hintText: "Email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                     text: 'Reset Password',
                   ),
                   SizedBox(height: 40.h),

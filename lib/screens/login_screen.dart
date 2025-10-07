@@ -134,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Enter your email',
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 20.h),
                     CustomTextfield(
@@ -141,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Enter your password',
                       controller: _passwordController,
                       keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
                       obsecureText: isobscureText,
                       suffixIcon: IconButton(
                         onPressed: () {

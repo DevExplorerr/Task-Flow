@@ -8,6 +8,7 @@ class CustomTextfield extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType? keyboardType;
+  final TextInputAction textInputAction;
   final IconButton? suffixIcon;
   final bool? obsecureText;
   final int? maxLines;
@@ -23,6 +24,7 @@ class CustomTextfield extends StatelessWidget {
     required this.text,
     this.maxLines = 1,
     this.autoFocus,
+    required this.textInputAction,
   });
 
   @override
@@ -47,7 +49,7 @@ class CustomTextfield extends StatelessWidget {
           maxLines: maxLines,
           keyboardType: keyboardType,
           controller: controller,
-          textInputAction: TextInputAction.next,
+          textInputAction: textInputAction,
           obscureText: obsecureText ?? false,
           decoration: inputDecoration().copyWith(
             hintText: hintText,

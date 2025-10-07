@@ -1,9 +1,11 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/provider/task_provider.dart';
 import 'package:task_management_app/services/notification_service.dart';
 import 'package:task_management_app/widgets/colors.dart';
@@ -35,7 +37,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await NotificationService.checkAndRequestPermission(context);
+      bool granted =
+          await NotificationService.checkAndRequestPermission(context);
+
+      if (!granted) {
+        showFloatingSnackBar(context,
+            message: "Enable notification to receive task reminders.",
+            backgroundColor: blackColor,
+            action: SnackBarAction(
+                label: "Open Settings",
+                textColor: whiteColor,
+                onPressed: () async {
+                  await openAppSettings();
+                }),
+            duration: const Duration(seconds: 4));
+      }
     });
   }
 

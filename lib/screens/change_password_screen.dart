@@ -122,6 +122,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     text: "Enter your email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: 25.h),
                   CustomTextfield(
@@ -129,6 +130,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     text: "Enter current password",
                     controller: currentPasswordController,
                     keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.next,
                     obsecureText: obsecureText,
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -148,6 +150,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     text: "Enter new password",
                     controller: newPasswordController,
                     keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.next,
                     obsecureText: obsecuretext,
                     suffixIcon: IconButton(
                       onPressed: () {

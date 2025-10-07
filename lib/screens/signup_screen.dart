@@ -12,6 +12,7 @@ import 'package:task_management_app/widgets/colors.dart';
 import 'package:task_management_app/screens/home_screen.dart';
 import 'package:task_management_app/widgets/custom_button.dart';
 import 'package:task_management_app/widgets/custom_textfield.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -57,25 +58,22 @@ class _SignupScreenState extends State<SignupScreen> {
           email: _emailController.text,
           password: _passwordController.text,
           userName: _usernameController.text);
-          showFloatingSnackBar(context,
-          message: "Registration successful",
-          backgroundColor: successColor);
+      showFloatingSnackBar(context,
+          message: "Registration successful", backgroundColor: successColor);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         showFloatingSnackBar(context,
-          message: "The email address is already in use.",
-          backgroundColor: errorColor);
+            message: "The email address is already in use.",
+            backgroundColor: errorColor);
       } else {
         showFloatingSnackBar(context,
-          message: "Error: ${e.code}",
-          backgroundColor: errorColor);
+            message: "Error: ${e.code}", backgroundColor: errorColor);
       }
     } catch (e) {
       showFloatingSnackBar(context,
-          message: "Unexpected error occurred.",
-          backgroundColor: errorColor);
+          message: "Unexpected error occurred.", backgroundColor: errorColor);
     }
     setState(() {
       isLoading = false;
@@ -157,19 +155,23 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: _usernameController,
                       text: "User Name",
                       keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 20.h),
                     CustomTextfield(
-                        hintText: "Enter email",
-                        controller: _emailController,
-                        text: "Email",
-                        keyboardType: TextInputType.emailAddress),
+                      hintText: "Enter email",
+                      controller: _emailController,
+                      text: "Email",
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
                     SizedBox(height: 20.h),
                     CustomTextfield(
                       hintText: "Enter password",
                       controller: _passwordController,
                       text: "Password",
                       keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
                       obsecureText: isobscureText,
                       suffixIcon: IconButton(
                         onPressed: () {
