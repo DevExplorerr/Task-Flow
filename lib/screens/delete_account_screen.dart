@@ -126,14 +126,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                     text: "Enter your email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: 25.h),
                   CustomTextfield(
                     hintText: 'Enter your password',
                     text: 'Password',
                     keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.next,
                     obsecureText: obsecureText,
                     controller: passwordController,
                     suffixIcon: IconButton(

@@ -155,7 +155,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: _usernameController,
                       text: "User Name",
                       keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 20.h),
                     CustomTextfield(
@@ -163,7 +162,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: _emailController,
                       text: "Email",
                       keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 20.h),
                     CustomTextfield(
@@ -171,7 +169,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: _passwordController,
                       text: "Password",
                       keyboardType: TextInputType.visiblePassword,
-                      textInputAction: TextInputAction.next,
                       obsecureText: isobscureText,
                       suffixIcon: IconButton(
                         onPressed: () {

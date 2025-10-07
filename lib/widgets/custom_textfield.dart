@@ -8,11 +8,11 @@ class CustomTextfield extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType? keyboardType;
-  final TextInputAction textInputAction;
   final IconButton? suffixIcon;
   final bool? obsecureText;
   final int? maxLines;
   final bool? autoFocus;
+  final TextInputAction? textInputAction;
 
   const CustomTextfield({
     super.key,
@@ -22,9 +22,9 @@ class CustomTextfield extends StatelessWidget {
     this.obsecureText,
     required this.controller,
     required this.text,
-    this.maxLines = 1,
+    this.maxLines,
     this.autoFocus,
-    required this.textInputAction,
+    this.textInputAction,
   });
 
   @override
@@ -46,10 +46,10 @@ class CustomTextfield extends StatelessWidget {
         TextFormField(
           style: GoogleFonts.poppins(color: textColor),
           autofocus: autoFocus ?? false,
-          maxLines: maxLines,
+          maxLines: maxLines ?? 1,
           keyboardType: keyboardType,
           controller: controller,
-          textInputAction: textInputAction,
+          textInputAction: textInputAction ?? TextInputAction.next,
           obscureText: obsecureText ?? false,
           decoration: inputDecoration().copyWith(
             hintText: hintText,

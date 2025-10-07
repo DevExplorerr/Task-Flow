@@ -121,7 +121,6 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
                     text: "User Name",
                     controller: userNameController,
                     keyboardType: TextInputType.name,
-                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: 35.h),
                   isLoading
