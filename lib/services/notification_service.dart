@@ -68,6 +68,13 @@ class NotificationService {
     required String body,
     required DateTime scheduledTime,
   }) async {
+    final scheduleDate = tz.TZDateTime.from(scheduledTime, tz.local);
+
+    // Skip notification if the reminder is in the past
+    if (scheduleDate.isBefore(tz.TZDateTime.now(tz.local))) {
+      return;
+    }
+
     final androidDetails = AndroidNotificationDetails(
       'reminder_channel',
       'Reminders',
@@ -79,15 +86,12 @@ class NotificationService {
     );
 
     final notificationDetails = NotificationDetails(android: androidDetails);
-    final scheduleDate = tz.TZDateTime.from(scheduledTime, tz.local);
 
     await _notificationsPlugin.zonedSchedule(
       taskId.hashCode,
       title,
       body,
-      scheduleDate.isBefore(tz.TZDateTime.now(tz.local))
-          ? tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5))
-          : scheduleDate,
+      scheduleDate,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.dateAndTime,
