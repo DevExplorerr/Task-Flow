@@ -18,7 +18,7 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(20),
@@ -31,7 +31,7 @@ class Menu extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: inputIconColor, size: 22.sp),
-            SizedBox(width: 20.w),
+            const SizedBox(width: 20),
             Expanded(
               child: Text(
                 text,

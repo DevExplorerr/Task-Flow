@@ -28,34 +28,23 @@ class TaskListTile extends StatefulWidget {
 }
 
 class _TaskListTileState extends State<TaskListTile> {
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController(text: widget.taskTitle);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 6.h),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: inputBorderColor, width: 1),
       ),
       child: ListTile(
         minTileHeight: 40.h,
-        contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 10.w),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         tileColor: bgColor,
         title: GestureDetector(
           onTap: () {
+            final editController =
+                TextEditingController(text: widget.taskTitle);
             showModalBottomSheet(
                 elevation: 10,
                 backgroundColor: bgColor,
@@ -66,15 +55,15 @@ class _TaskListTileState extends State<TaskListTile> {
                       hintText: 'Edit your task...',
                       text: 'Edit Task',
                       buttonText: 'Save',
-                      controller: controller,
+                      controller: editController,
+                      initialReminder: widget.reminderDateTime,
                       onPressed: () {
-                        if (controller.text.trim().isNotEmpty) {
-                          widget.onEdit(
-                              controller.text.trim(), widget.reminderDateTime);
+                        if (editController.text.trim().isNotEmpty) {
+                          widget.onEdit(editController.text.trim(),
+                              widget.reminderDateTime);
                           Navigator.pop(context);
                         }
                       },
-                      initialReminder: widget.reminderDateTime,
                       onReminderSelected: (dateTime) {
                         setState(() {
                           widget.reminderDateTime = dateTime;
@@ -108,10 +97,10 @@ class _TaskListTileState extends State<TaskListTile> {
                   children: [
                     widget.isCompleted
                         ? const SizedBox.shrink()
-                        : Icon(
+                        : const Icon(
                             Icons.alarm,
-                            color: Colors.red[300],
-                            size: 20.sp,
+                            color: Colors.red,
+                            size: 20,
                           ),
                     const SizedBox(width: 5),
                     Text(

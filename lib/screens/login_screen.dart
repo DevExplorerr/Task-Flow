@@ -116,10 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Form Section
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                 child: Column(
                   children: [
-                    SizedBox(height: 5.h),
+                    const SizedBox(height: 5),
                     Text(
                       "Sign In To Continue",
                       style: GoogleFonts.poppins(
@@ -128,14 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 35.h),
+                    const SizedBox(height: 35),
                     CustomTextfield(
                       text: "Email",
                       hintText: 'Enter your email',
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    SizedBox(height: 20.h),
+                    const SizedBox(height: 20),
                     CustomTextfield(
                       text: "Password",
                       hintText: 'Enter your password',
@@ -156,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.h),
+                    const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -183,14 +184,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.only(top: 10.h),
                             child: Text(
                               errorMessage,
-                              style: GoogleFonts.poppins(color: Colors.red),
+                              style: GoogleFonts.poppins(color: errorColor),
                             ),
                           )
                         : const SizedBox.shrink(),
-                    SizedBox(height: 45.h),
+                    const SizedBox(height: 45),
                     isLoading
-                        ? Center(
-                            child: const CircularProgressIndicator(
+                        ? const Center(
+                            child: CircularProgressIndicator(
                                 color: blackColor, strokeWidth: 5),
                           )
                         : CustomButton(
@@ -204,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             buttonTextColor: primaryButtonTextColor,
                             fontSize: 22.sp,
                           ),
-                    SizedBox(height: 20.h),
+                    const SizedBox(height: 20),
                     Text(
                       "Terms and Conditions | Privacy Policy",
                       style: GoogleFonts.poppins(

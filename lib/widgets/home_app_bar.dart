@@ -17,7 +17,7 @@ class HomeAppBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _UserName(uid: uid),
+        UserName(uid: uid),
         const SizedBox(height: 5),
         Text(
           formattedDate,
@@ -32,9 +32,9 @@ class HomeAppBar extends StatelessWidget {
   }
 }
 
-class _UserName extends StatelessWidget {
+class UserName extends StatelessWidget {
   final String uid;
-  const _UserName({required this.uid});
+  const UserName({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {

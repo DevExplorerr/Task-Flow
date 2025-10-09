@@ -49,13 +49,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
     super.dispose();
   }
 
-  void navigateToLoginScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-  }
-
   Future<void> deleteAccount() async {
     try {
       setState(() {
@@ -72,7 +65,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
 
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pop(context);
-      navigateToLoginScreen();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
     } on FirebaseAuthException catch (e) {
       showFloatingSnackBar(context,
           message: e.message.toString(), backgroundColor: errorColor);
@@ -98,20 +94,20 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
         ),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Icon(
+                    child: const Icon(
                       Icons.delete_forever,
-                      size: 80.sp,
+                      size: 80,
                       color: inputIconColor,
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  const SizedBox(height: 20),
                   Text(
                     "Delete my account",
                     style: GoogleFonts.poppins(
@@ -120,14 +116,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 40.h),
+                  const SizedBox(height: 40),
                   CustomTextfield(
                     hintText: "Email",
                     text: "Enter your email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   CustomTextfield(
                     hintText: 'Enter your password',
                     text: 'Password',
@@ -146,10 +142,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                       ),
                     ),
                   ),
-                  SizedBox(height: 35.h),
+                  const SizedBox(height: 35),
                   isLoading
-                      ? Center(
-                          child: const CircularProgressIndicator(
+                      ? const Center(
+                          child: CircularProgressIndicator(
                               color: blackColor, strokeWidth: 5),
                         )
                       : CustomButton(

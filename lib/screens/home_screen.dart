@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/global/snackbar.dart';
@@ -72,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: whiteColor,
             actions: [
               Padding(
-                padding: EdgeInsets.only(top: 10.h, right: 15.w),
+                padding: const EdgeInsets.only(top: 10, right: 15),
                 child: Builder(
                   builder: (context) => IconButton(
                     icon: const Icon(Icons.menu, color: blackColor),
@@ -82,16 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
             flexibleSpace: Padding(
-              padding: EdgeInsets.only(
-                top: 50.h,
-                left: 20.w,
-                right: 20.w,
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 20,
+                right: 20,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const HomeAppBar(),
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   TaskSearchBar(
                       onSearchChanged: taskProvider.updateSearchQuery),
                 ],
@@ -134,13 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             height: 60.h,
             width: 60.w,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: whiteColor,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color: greyColor,
-                  offset: const Offset(1, 1),
+                  offset: Offset(1, 1),
                   blurRadius: 10,
                 )
               ],
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ondeleteAll: taskProvider.deleteAllTasks,
               taskCount: taskProvider.task.length,
             ),
-            SizedBox(height: 5.h),
+            const SizedBox(height: 5),
             if (taskProvider.isLoading)
               const Expanded(
                   child: Center(
@@ -167,19 +168,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.inbox, size: 80, color: greyColor),
-                      SizedBox(height: 15.h),
+                      const SizedBox(height: 15),
                       Text(
                         "No tasks yet",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w500,
                           color: greyColor,
                         ),
                       ),
-                      SizedBox(height: 5.h),
+                      const SizedBox(height: 5),
                       Text(
                         "Tap + to add your first task",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 14.sp,
                           color: greyColor,
                         ),
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     padding:
-                        EdgeInsets.only(left: 20.w, right: 20.w, bottom: 90.h),
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 96),
                     itemCount: taskProvider.task.length,
                     itemBuilder: (context, index) {
                       final tasks = taskProvider.task[index];

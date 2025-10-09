@@ -50,8 +50,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         padding: MediaQuery.of(context).viewInsets,
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.only(
-                left: 20.w, right: 20.w, top: 10.h, bottom: 30.h),
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
@@ -60,7 +60,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 12.h),
+                const SizedBox(height: 12),
                 CustomTextfield(
                   hintText: widget.hintText,
                   controller: widget.controller,
@@ -75,27 +75,13 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     reminder(context),
-                    SizedBox(width: 10.w),
-                    // CustomButton(
-                    //   buttonColor: primaryButtonColor,
-                    //   buttonText: widget.buttonText,
-                    //   buttonTextColor: primaryButtonTextColor,
-                    //   fontSize: 14.sp,
-                    //   onPressed: () async {
-                    //     await NotificationService.scheduleNotification(
-                    //         taskId: "1",
-                    //         title: "Test",
-                    //         body: "Schedule Notification",
-                    //         scheduledTime: DateTime.now());
-                    //   },
-                    // ),
+                    const SizedBox(width: 10),
                     CustomButton(
                       buttonColor: primaryButtonColor,
                       buttonText: widget.buttonText,
                       buttonTextColor: primaryButtonTextColor,
                       fontSize: 14.sp,
                       onPressed: () {
-                        //task & reminder saved in firestore
                         widget.onPressed();
                         widget.onReminderSelected(_selectedDateTime);
                       },
@@ -114,7 +100,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
     return GestureDetector(
       onTap: () => _showDateTimePicker(context),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
             color: blackColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8.r)),
@@ -175,8 +161,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: kToolbarHeight.w, vertical: 10.h),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: kToolbarHeight, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

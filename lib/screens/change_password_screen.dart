@@ -56,7 +56,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       showFloatingSnackBar(context,
           message: "Password Changed Successfully",
           backgroundColor: successColor);
-      navigateToHomeScreen();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     } catch (e) {
       showFloatingSnackBar(context,
           message: "Password Change Failed", backgroundColor: errorColor);
@@ -64,13 +67,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
     setState(() {
       isLoading = false;
     });
-  }
-
-  void navigateToHomeScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
   }
 
   @override
@@ -98,16 +94,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
         ),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Icon(Icons.lock, size: 80.sp, color: inputIconColor),
+                    child:
+                        const Icon(Icons.lock, size: 80, color: inputIconColor),
                   ),
-                  SizedBox(height: 20.h),
+                  const SizedBox(height: 20),
                   Text(
                     "Change Password",
                     style: GoogleFonts.poppins(
@@ -116,14 +113,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 40.h),
+                  const SizedBox(height: 40),
                   CustomTextfield(
                     hintText: "Email",
                     text: "Enter your email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   CustomTextfield(
                     hintText: "Current Password",
                     text: "Enter current password",
@@ -142,7 +139,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       ),
                     ),
                   ),
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   CustomTextfield(
                     hintText: "New Password",
                     text: "Enter new password",
@@ -163,8 +160,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                   ),
                   SizedBox(height: 35.h),
                   isLoading
-                      ? Center(
-                          child: const CircularProgressIndicator(
+                      ? const Center(
+                          child: CircularProgressIndicator(
                               color: blackColor, strokeWidth: 5),
                         )
                       : CustomButton(

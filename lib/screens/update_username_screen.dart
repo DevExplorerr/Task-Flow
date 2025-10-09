@@ -48,7 +48,10 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
         showFloatingSnackBar(context,
             message: "Username Changed Successfully",
             backgroundColor: successColor);
-        navigateToHomeScreen();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
       } else {
         showFloatingSnackBar(context,
             message: "Please enter a valid username",
@@ -61,13 +64,6 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
         isLoading = false;
       });
     }
-  }
-
-  void navigateToHomeScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
   }
 
   @override
@@ -93,20 +89,20 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
         ),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Icon(
+                    child: const Icon(
                       Icons.text_fields,
-                      size: 80.sp,
+                      size: 80,
                       color: inputIconColor,
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  const SizedBox(height: 20),
                   Text(
                     "Update username",
                     style: GoogleFonts.poppins(
@@ -115,14 +111,14 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 40.h),
+                  const SizedBox(height: 40),
                   CustomTextfield(
                     hintText: "Enter new username",
                     text: "User Name",
                     controller: userNameController,
                     keyboardType: TextInputType.name,
                   ),
-                  SizedBox(height: 35.h),
+                  const SizedBox(height: 35),
                   isLoading
                       ? const Center(
                           child: CircularProgressIndicator(

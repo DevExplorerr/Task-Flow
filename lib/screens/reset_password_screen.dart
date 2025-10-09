@@ -88,20 +88,20 @@ class _ResetPasswordState extends State<ResetPassword>
         ),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Icon(
+                    child: const Icon(
                       Icons.lock_outline,
-                      size: 80.sp,
+                      size: 80,
                       color: blackColor,
                     ),
                   ),
-                  SizedBox(height: 25.h),
+                  const SizedBox(height: 25),
                   Text(
                     "Reset Password",
                     style: GoogleFonts.poppins(
@@ -110,7 +110,7 @@ class _ResetPasswordState extends State<ResetPassword>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.h),
+                  const SizedBox(height: 10),
                   Text(
                     "Enter your email to receive a reset link",
                     textAlign: TextAlign.center,
@@ -119,14 +119,14 @@ class _ResetPasswordState extends State<ResetPassword>
                       fontSize: 14.sp,
                     ),
                   ),
-                  SizedBox(height: 35.h),
+                  const SizedBox(height: 35),
                   CustomTextfield(
                     hintText: "Email",
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     text: 'Reset Password',
                   ),
-                  SizedBox(height: 40.h),
+                  const SizedBox(height: 40),
                   isLoading
                       ? const Center(
                           child: CircularProgressIndicator(color: blackColor))

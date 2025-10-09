@@ -137,10 +137,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
               // Form Section
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
                 child: Column(
                   children: [
-                    SizedBox(height: 5.h),
+                    const SizedBox(height: 5),
                     Text(
                       "New User? Get Started Now",
                       style: GoogleFonts.poppins(
@@ -149,21 +150,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 35.h),
+                    const SizedBox(height: 35),
                     CustomTextfield(
                       hintText: "Enter username",
                       controller: _usernameController,
                       text: "User Name",
                       keyboardType: TextInputType.name,
                     ),
-                    SizedBox(height: 20.h),
+                    const SizedBox(height: 20),
                     CustomTextfield(
                       hintText: "Enter email",
                       controller: _emailController,
                       text: "Email",
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    SizedBox(height: 20.h),
+                    const SizedBox(height: 20),
                     CustomTextfield(
                       hintText: "Enter password",
                       controller: _passwordController,
@@ -186,20 +187,20 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     errorMessage.isNotEmpty
                         ? Padding(
-                            padding: EdgeInsets.only(top: 10.h),
+                            padding: const EdgeInsets.only(top: 10),
                             child: Text(
                               errorMessage,
-                              style: GoogleFonts.poppins(color: Colors.red),
+                              style: GoogleFonts.poppins(color: errorColor),
                             ),
                           )
                         : const SizedBox.shrink(),
-                    SizedBox(height: 45.h),
+                    const SizedBox(height: 45),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         isLoading
-                            ? Center(
-                                child: const CircularProgressIndicator(
+                            ? const Center(
+                                child: CircularProgressIndicator(
                                     color: blackColor, strokeWidth: 5),
                               )
                             : CustomButton(
@@ -226,7 +227,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20.h),
+                    const SizedBox(height: 20),
                     Text(
                       "Terms and Conditions | Privacy Policy",
                       style: GoogleFonts.poppins(

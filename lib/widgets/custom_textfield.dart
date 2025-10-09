@@ -40,8 +40,8 @@ class CustomTextfield extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(
-          height: 5.h,
+        const SizedBox(
+          height: 5,
         ),
         TextFormField(
           style: GoogleFonts.poppins(color: textColor),

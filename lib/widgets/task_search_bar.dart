@@ -21,7 +21,7 @@ class _TaskSearchBarState extends State<TaskSearchBar> {
       onChanged: widget.onSearchChanged,
       decoration: InputDecoration(
         contentPadding:
-            EdgeInsets.symmetric(vertical: 14.0.h, horizontal: 16.0.w),
+            const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
         hintText: 'Search task',
         hintStyle: GoogleFonts.podkova(
           color: inputHintTextColor,

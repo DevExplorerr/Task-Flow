@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
             filterQuality: FilterQuality.high,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.h),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Column(
               children: [
                 Text(
@@ -50,13 +50,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     color: textColor,
                   ),
                 ),
-                SizedBox(height: 25.h),
+                const SizedBox(height: 25),
                 Image.asset(
                   "assets/app_logo.png",
                   height: 220.h,
                   width: 239.w,
                 ),
-                SizedBox(height: 35.h),
+                const SizedBox(height: 35),
                 const CircularProgressIndicator(
                   color: blackColor,
                 )

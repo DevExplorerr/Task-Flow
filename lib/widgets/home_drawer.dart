@@ -22,13 +22,6 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
-  void navigateToLoginScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-  }
-
   void logout() async {
     try {
       await authservice.value.logout();
@@ -36,7 +29,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
           message: "Logged out successfully", backgroundColor: successColor);
       Navigator.pop(context);
       await Future.delayed(const Duration(seconds: 1));
-      navigateToLoginScreen();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
     } on FirebaseAuthException catch (e) {
       showFloatingSnackBar(context,
           message: e.message.toString(), backgroundColor: errorColor);
@@ -46,7 +42,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 90.w),
+      padding: const EdgeInsets.only(left: 90),
       child: Drawer(
         backgroundColor: bgColor,
         elevation: 6,
