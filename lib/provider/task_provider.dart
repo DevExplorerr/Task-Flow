@@ -1,37 +1,106 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_management_app/services/notification_service.dart';
 
 class TaskProvider extends ChangeNotifier {
-  final String uid = FirebaseAuth.instance.currentUser!.uid;
-  List<Map<String, dynamic>> tasks = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  List<Map<String, dynamic>> _tasks = [];
   String _searchQuery = '';
   bool _isLoading = true;
+  StreamSubscription? _taskSubscription;
 
   bool get isLoading => _isLoading;
 
-  List<Map<String, dynamic>> get task {
-    if (_searchQuery.isEmpty) return tasks;
-    return tasks
+  List<Map<String, dynamic>> get tasks {
+    if (_searchQuery.isEmpty) return _tasks;
+    return _tasks
         .where((task) =>
             task['title'].toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
   }
 
-//Load Tasks
-  Future<void> loadTasksFromFirestore() async {
+  // Load Tasks (Firestore local caching)
+  void listenToTasks() {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+
     _isLoading = true;
     notifyListeners();
 
-    final snapshot = await FirebaseFirestore.instance
+    _taskSubscription?.cancel();
+
+    // Load task from cache first
+    _firestore
         .collection('users')
         .doc(uid)
         .collection('tasks')
         .orderBy('createdAt', descending: true)
-        .get();
+        .get(const GetOptions(source: Source.cache))
+        .then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        _tasks = snapshot.docs.map((doc) {
+          return {
+            'id': doc.id,
+            'title': doc['title'],
+            'isCompleted': doc['isCompleted'],
+            'reminder': doc['reminder'],
+          };
+        }).toList();
 
-    tasks = snapshot.docs.map((doc) {
+        _isLoading = false;
+        notifyListeners();
+      }
+    });
+
+    // Listen to Firestore updates in real time
+    _taskSubscription = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('tasks')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      _tasks = snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          'title': doc['title'],
+          'isCompleted': doc['isCompleted'],
+          'reminder': doc['reminder'],
+        };
+      }).toList();
+
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  // Dispose listener
+  @override
+  void dispose() {
+    _taskSubscription?.cancel();
+    super.dispose();
+  }
+
+  // Manual refresh
+  Future<void> refreshTasks() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('tasks')
+        .orderBy('createdAt', descending: true)
+        .get(const GetOptions(source: Source.server));
+
+    _tasks = snapshot.docs.map((doc) {
       return {
         'id': doc.id,
         'title': doc['title'],
@@ -44,95 +113,77 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-//Add Task
-  Future<void> addTask(String taskTitle, {DateTime? reminder}) async {
-    final col = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('tasks');
+  // Add Task
+  Future<void> addTask(String title, {DateTime? reminder}) async {
+    final uid = _auth.currentUser!.uid;
+    final colRef = _firestore.collection('users').doc(uid).collection('tasks');
 
-    final docRef = await col.add({
-      'title': taskTitle,
+    final docRef = await colRef.add({
+      'title': title,
       'isCompleted': false,
       'createdAt': FieldValue.serverTimestamp(),
       'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
     });
 
-    tasks.insert(0, {
-      'id': docRef.id,
-      'title': taskTitle,
-      'isCompleted': false,
-      'reminder': reminder != null ? Timestamp.fromDate(reminder) : null,
-    });
-
     if (reminder != null) {
       await NotificationService.scheduleNotification(
-          taskId: docRef.id,
-          title: "Task Reminder",
-          body: taskTitle,
-          scheduledTime: reminder);
+        taskId: docRef.id,
+        title: "Task Reminder",
+        body: title,
+        scheduledTime: reminder,
+      );
     }
-
-    notifyListeners();
   }
 
-  //  Edit Task
+  // Edit Task
   Future<void> editTask(String taskId, String newTitle,
       {DateTime? newReminder}) async {
-    final docRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('tasks')
-        .doc(taskId);
+    final uid = _auth.currentUser!.uid;
+    final docRef =
+        _firestore.collection('users').doc(uid).collection('tasks').doc(taskId);
 
     await docRef.update({
       'title': newTitle,
       'reminder': newReminder != null ? Timestamp.fromDate(newReminder) : null,
     });
 
-    final index = tasks.indexWhere((task) => task['id'] == taskId);
-    if (index != -1) {
-      final isCompleted = tasks[index]['isCompleted'] ?? false;
-      tasks[index]['title'] = newTitle;
-      tasks[index]['reminder'] =
-          newReminder != null ? Timestamp.fromDate(newReminder) : null;
+    await NotificationService.cancelNotification(taskId);
 
-      // Cancel previous notification
-      await NotificationService.cancelNotification(taskId);
+    final existingTask =
+        _tasks.firstWhere((task) => task['id'] == taskId, orElse: () => {});
+    final isCompleted = existingTask['isCompleted'] ?? false;
 
-      if (!isCompleted && newReminder != null) {
-        await NotificationService.scheduleNotification(
-            taskId: taskId,
-            title: 'Task Reminder',
-            body: newTitle,
-            scheduledTime: newReminder);
-      }
+    if (!isCompleted && newReminder != null) {
+      await NotificationService.scheduleNotification(
+        taskId: taskId,
+        title: "Task Reminder",
+        body: newTitle,
+        scheduledTime: newReminder,
+      );
     }
-
-    notifyListeners();
   }
 
-// Delete Task
+  // Delete Task
   Future<void> deleteTask(String taskId) async {
-    await FirebaseFirestore.instance
+    final uid = _auth.currentUser!.uid;
+
+    await _firestore
         .collection('users')
         .doc(uid)
         .collection('tasks')
         .doc(taskId)
         .delete();
 
-    tasks.removeWhere((task) => task['id'] == taskId);
-
-    // Cancel reminder notification if task is deleted
     await NotificationService.cancelNotification(taskId);
-    notifyListeners();
   }
 
-// Delete All Tasks
+  // Delete All
   Future<void> deleteAllTasks() async {
-    final batch = FirebaseFirestore.instance.batch();
-    for (var task in tasks) {
-      final docRef = FirebaseFirestore.instance
+    final uid = _auth.currentUser!.uid;
+    final batch = _firestore.batch();
+
+    for (final task in _tasks) {
+      final docRef = _firestore
           .collection('users')
           .doc(uid)
           .collection('tasks')
@@ -142,54 +193,38 @@ class TaskProvider extends ChangeNotifier {
     }
 
     await batch.commit();
-
-    tasks.clear();
-    notifyListeners();
   }
 
-// Toggle Status
+  // Toggle Completion Status
   Future<void> toggleTaskStatus(String taskId, bool isCompleted) async {
-    final taskRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('tasks')
-        .doc(taskId);
+    final uid = _auth.currentUser!.uid;
+    final docRef =
+        _firestore.collection('users').doc(uid).collection('tasks').doc(taskId);
 
-    // Update Firestore
-    await taskRef.update({'isCompleted': isCompleted});
+    await docRef.update({'isCompleted': isCompleted});
 
-    // Update List
-    final index = tasks.indexWhere((task) => task['id'] == taskId);
-    if (index != -1) {
-      tasks[index]['isCompleted'] = isCompleted;
+    final task =
+        _tasks.firstWhere((task) => task['id'] == taskId, orElse: () => {});
+    final reminderTimestamp = task['reminder'];
+    final reminder = reminderTimestamp != null
+        ? (reminderTimestamp as Timestamp).toDate()
+        : null;
 
-      // Handling notifications
-      final reminderTimestamp = tasks[index]['reminder'];
-      final reminder = reminderTimestamp != null
-          ? (reminderTimestamp as Timestamp).toDate()
-          : null;
-
-      if (isCompleted) {
-        // Cancel notification when task completed
-        await NotificationService.cancelNotification(taskId);
-      } else {
-        // Reschedule if uncompleted again & reminder still valid
-        if (reminder != null && reminder.isAfter(DateTime.now())) {
-          await NotificationService.scheduleNotification(
-            taskId: taskId,
-            title: "Task Reminder",
-            body: tasks[index]['title'],
-            scheduledTime: reminder,
-          );
-        }
-      }
+    if (isCompleted) {
+      await NotificationService.cancelNotification(taskId);
+    } else if (reminder != null && reminder.isAfter(DateTime.now())) {
+      await NotificationService.scheduleNotification(
+        taskId: taskId,
+        title: "Task Reminder",
+        body: task['title'],
+        scheduledTime: reminder,
+      );
     }
-    notifyListeners();
   }
 
-  // Update Search
+  // Search
   void updateSearchQuery(String query) {
-    _searchQuery = query.toLowerCase();
+    _searchQuery = query;
     notifyListeners();
   }
 }

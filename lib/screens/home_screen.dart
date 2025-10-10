@@ -46,179 +46,230 @@ class _HomeScreenState extends State<HomeScreen> {
             message: "Enable notification to receive task reminders.",
             backgroundColor: blackColor,
             action: SnackBarAction(
-                label: "Open Settings",
-                textColor: whiteColor,
-                onPressed: () async {
-                  await openAppSettings();
-                }),
+              label: "Open Settings",
+              textColor: whiteColor,
+              onPressed: () async => await openAppSettings(),
+            ),
             duration: const Duration(seconds: 4));
       }
+
+      context.read<TaskProvider>().listenToTasks();
     });
+  }
+
+  void _openAddTaskBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      elevation: 10,
+      backgroundColor: bgColor,
+      showDragHandle: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => CustomBottomSheet(
+        hintText: "Add task here...",
+        text: "New Task",
+        buttonText: "Add",
+        controller: titleController,
+        onPressed: () {
+          final taskTitle = titleController.text.trim();
+          if (taskTitle.isEmpty) return;
+          context
+              .read<TaskProvider>()
+              .addTask(taskTitle, reminder: reminderDateTime);
+
+          titleController.clear();
+          Navigator.of(context).pop();
+        },
+        onReminderSelected: (dateTime) => reminderDateTime = dateTime,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = Provider.of<TaskProvider>(context);
+    final taskProvider = context.watch<TaskProvider>();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(165.h),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            backgroundColor: whiteColor,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 15),
-                child: Builder(
-                  builder: (context) => IconButton(
-                    icon: const Icon(Icons.menu, color: blackColor),
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  ),
-                ),
-              ),
-            ],
-            flexibleSpace: Padding(
-              padding: const EdgeInsets.only(
-                top: 50,
-                left: 20,
-                right: 20,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HomeAppBar(),
-                  const SizedBox(height: 25),
-                  TaskSearchBar(
-                      onSearchChanged: taskProvider.updateSearchQuery),
-                ],
-              ),
-            ),
-          ),
-        ),
+            preferredSize: Size.fromHeight(165.h),
+            child: const _StaticAppBar()),
         endDrawer: const HomeDrawer(),
         endDrawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 100,
         drawerScrimColor: blackColor.withOpacity(0.3),
-        floatingActionButton: GestureDetector(
-          onTap: () {
-            showModalBottomSheet(
-              elevation: 10,
-              backgroundColor: bgColor,
-              showDragHandle: true,
-              isScrollControlled: true,
-              context: context,
-              builder: (context) => CustomBottomSheet(
-                hintText: "Add task here...",
-                text: "New Task",
-                buttonText: "Add",
-                controller: titleController,
-                onPressed: () {
-                  final taskTitle = titleController.text;
-                  if (taskTitle.trim().isEmpty) return;
-                  taskProvider.addTask(taskTitle, reminder: reminderDateTime);
-                  titleController.clear();
-                  Navigator.of(context).pop();
-                },
-                onReminderSelected: (dateTime) {
-                  setState(() {
-                    reminderDateTime = dateTime;
-                  });
-                },
-              ),
-            );
-          },
-          child: Container(
-            height: 60.h,
-            width: 60.w,
-            decoration: const BoxDecoration(
-              color: whiteColor,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: greyColor,
-                  offset: Offset(1, 1),
-                  blurRadius: 10,
-                )
-              ],
-            ),
-            child: const Icon(Icons.add, color: blackColor, size: 30),
-          ),
-        ),
+        floatingActionButton: const _AddTaskFloatingButton(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TaskSubHeader(
               ondeleteAll: taskProvider.deleteAllTasks,
-              taskCount: taskProvider.task.length,
+              taskCount: taskProvider.tasks.length,
             ),
             const SizedBox(height: 5),
             if (taskProvider.isLoading)
               const Expanded(
                   child: Center(
                       child: CircularProgressIndicator(color: blackColor)))
-            else if (taskProvider.task.isEmpty)
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.inbox, size: 80, color: greyColor),
-                      const SizedBox(height: 15),
-                      Text(
-                        "No tasks yet",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w500,
-                          color: greyColor,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        "Tap + to add your first task",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14.sp,
-                          color: greyColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
+            else if (taskProvider.tasks.isEmpty)
+              const Expanded(child: _EmptyState())
             else
               Expanded(
-                child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 96),
-                    itemCount: taskProvider.task.length,
-                    itemBuilder: (context, index) {
-                      final tasks = taskProvider.task[index];
-                      return TaskListTile(
-                        taskTitle: tasks['title'],
-                        isCompleted: tasks['isCompleted'],
-                        reminderDateTime: tasks['reminder'] != null
-                            ? (tasks['reminder'] as Timestamp).toDate()
-                            : null,
-                        onStatusToggle: (value) {
-                          taskProvider.toggleTaskStatus(tasks['id'], value);
-                        },
-                        onDelete: () {
-                          taskProvider.deleteTask(tasks['id']);
-                        },
-                        onEdit: (updatedTitle, updateReminder) {
-                          taskProvider.editTask(tasks['id'], updatedTitle,
-                              newReminder: updateReminder);
+                child: RefreshIndicator(
+                  color: blackColor,
+                  backgroundColor: whiteColor,
+                  triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                  onRefresh: context.read<TaskProvider>().refreshTasks,
+                  child: Selector<TaskProvider, List<Map<String, dynamic>>>(
+                    selector: (_, provider) => provider.tasks,
+                    builder: (context, taskList, _) {
+                      return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 96),
+                        itemCount: taskList.length,
+                        itemBuilder: (context, index) {
+                          final tasks = taskList[index];
+                          return RepaintBoundary(
+                            child: TaskListTile(
+                              taskTitle: tasks['title'],
+                              isCompleted: tasks['isCompleted'],
+                              reminderDateTime: tasks['reminder'] != null
+                                  ? (tasks['reminder'] as Timestamp).toDate()
+                                  : null,
+                              onStatusToggle: (value) {
+                                context
+                                    .read<TaskProvider>()
+                                    .toggleTaskStatus(tasks['id'], value);
+                              },
+                              onDelete: () {
+                                context
+                                    .read<TaskProvider>()
+                                    .deleteTask(tasks['id']);
+                              },
+                              onEdit: (updatedTitle, updateReminder) {
+                                context.read<TaskProvider>().editTask(
+                                      tasks['id'],
+                                      updatedTitle,
+                                      newReminder: updateReminder,
+                                    );
+                              },
+                            ),
+                          );
                         },
                       );
-                    }),
-              )
+                    },
+                  ),
+                ),
+              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _StaticAppBar extends StatelessWidget {
+  const _StaticAppBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: whiteColor,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10, right: 15),
+          child: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu, color: blackColor),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            ),
+          ),
+        ),
+      ],
+      flexibleSpace: Padding(
+        padding: const EdgeInsets.only(
+          top: 50,
+          left: 20,
+          right: 20,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HomeAppBar(),
+            const SizedBox(height: 25),
+            Consumer<TaskProvider>(
+              builder: (_, provider, __) =>
+                  TaskSearchBar(onSearchChanged: provider.updateSearchQuery),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AddTaskFloatingButton extends StatelessWidget {
+  const _AddTaskFloatingButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context
+          .findAncestorStateOfType<_HomeScreenState>()
+          ?._openAddTaskBottomSheet(context),
+      child: Container(
+        height: 60.h,
+        width: 60.w,
+        decoration: const BoxDecoration(
+          color: whiteColor,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: greyColor,
+              offset: Offset(1, 1),
+              blurRadius: 10,
+            )
+          ],
+        ),
+        child: const Icon(Icons.add, color: blackColor, size: 30),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.inbox, size: 80, color: greyColor),
+          const SizedBox(height: 15),
+          Text(
+            "No tasks yet",
+            style: GoogleFonts.poppins(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w500,
+              color: greyColor,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            "Tap + to add your first task",
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              color: greyColor,
+            ),
+          ),
+        ],
       ),
     );
   }

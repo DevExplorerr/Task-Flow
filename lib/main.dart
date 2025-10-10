@@ -15,15 +15,13 @@ import 'package:task_management_app/widgets/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await NotificationService.requestPermission();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await NotificationService.init();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-        create: (_) => TaskProvider()..loadTasksFromFirestore())
-  ], child: const MyApp()));
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => TaskProvider())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
