@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/login_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -47,29 +48,51 @@ class _ResetPasswordState extends State<ResetPassword>
   }
 
   Future<void> resetPassword() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      await authservice.value.resetPassword(email: emailController.text);
-      showFloatingSnackBar(context,
-          message: "Reset link sent check your email",
-          backgroundColor: successColor);
+    final email = emailController.text.trim();
 
-      Future.delayed(const Duration(seconds: 1), () {
+    if (email.isEmpty) {
+      showFloatingSnackBar(
+        context,
+        message: "Please enter your email address.",
+        backgroundColor: errorColor,
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await authservice.value.resetPassword(email: email);
+
+      showFloatingSnackBar(
+        context,
+        message: "Reset link sent! Check your email.",
+        backgroundColor: successColor,
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
-      });
+      }
     } on FirebaseAuthException catch (e) {
-      showFloatingSnackBar(context,
-          message: e.message ?? "An error occured",
-          backgroundColor: errorColor);
+      showFloatingSnackBar(
+        context,
+        message: e.message ?? "An error occurred. Please try again.",
+        backgroundColor: errorColor,
+      );
+    } catch (_) {
+      showFloatingSnackBar(
+        context,
+        message: "Unexpected error occurred. Try again later.",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
@@ -78,13 +101,9 @@ class _ResetPasswordState extends State<ResetPassword>
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: blackColor),
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: const CustomAppBar(),
         ),
         body: SafeArea(
           child: Padding(
@@ -137,9 +156,7 @@ class _ResetPasswordState extends State<ResetPassword>
                           height: 48.h,
                           width: double.infinity,
                           fontSize: 16.sp,
-                          onPressed: () async {
-                            await resetPassword();
-                          },
+                          onPressed: () => resetPassword(),
                         ),
                 ],
               ),

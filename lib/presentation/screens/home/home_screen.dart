@@ -2,20 +2,21 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/provider/task_provider.dart';
-import 'package:task_management_app/services/notification_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_bottom_sheet.dart';
-import 'package:task_management_app/widgets/home_app_bar.dart';
-import 'package:task_management_app/widgets/home_drawer.dart';
-import 'package:task_management_app/widgets/task_search_bar.dart';
-import '../widgets/task_list_tile.dart';
-import '../widgets/task_sub_header.dart';
+import 'package:task_management_app/logic/provider/task_provider.dart';
+import 'package:task_management_app/logic/services/notification_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_bottom_sheet.dart';
+import 'package:task_management_app/presentation/widgets/app_bar/home_app_bar.dart';
+import 'package:task_management_app/presentation/widgets/drawer/home_drawer.dart';
+import 'package:task_management_app/presentation/widgets/tasks/task_search_bar.dart';
+import '../../widgets/tasks/task_list_tile.dart';
+import '../../widgets/tasks/task_sub_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -86,8 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = context.watch<TaskProvider>();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -103,66 +102,78 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TaskSubHeader(
-              ondeleteAll: taskProvider.deleteAllTasks,
-              taskCount: taskProvider.tasks.length,
+            Selector<TaskProvider, int>(
+              selector: (_, p) => p.tasks.length,
+              builder: (_, taskcount, __) => TaskSubHeader(
+                ondeleteAll: context.read<TaskProvider>().deleteAllTasks,
+                taskCount: taskcount,
+              ),
             ),
             const SizedBox(height: 5),
-            if (taskProvider.isLoading)
-              const Expanded(
-                  child: Center(
-                      child: CircularProgressIndicator(color: blackColor)))
-            else if (taskProvider.tasks.isEmpty)
-              const Expanded(child: _EmptyState())
-            else
-              Expanded(
-                child: RefreshIndicator(
-                  color: blackColor,
-                  backgroundColor: whiteColor,
-                  triggerMode: RefreshIndicatorTriggerMode.onEdge,
-                  onRefresh: context.read<TaskProvider>().refreshTasks,
-                  child: Selector<TaskProvider, List<Map<String, dynamic>>>(
-                    selector: (_, provider) => provider.tasks,
-                    builder: (context, taskList, _) {
-                      return ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 96),
-                        itemCount: taskList.length,
-                        itemBuilder: (context, index) {
-                          final tasks = taskList[index];
-                          return RepaintBoundary(
-                            child: TaskListTile(
-                              taskTitle: tasks['title'],
-                              isCompleted: tasks['isCompleted'],
-                              reminderDateTime: tasks['reminder'] != null
-                                  ? (tasks['reminder'] as Timestamp).toDate()
-                                  : null,
-                              onStatusToggle: (value) {
-                                context
-                                    .read<TaskProvider>()
-                                    .toggleTaskStatus(tasks['id'], value);
-                              },
-                              onDelete: () {
-                                context
-                                    .read<TaskProvider>()
-                                    .deleteTask(tasks['id']);
-                              },
-                              onEdit: (updatedTitle, updateReminder) {
-                                context.read<TaskProvider>().editTask(
-                                      tasks['id'],
-                                      updatedTitle,
-                                      newReminder: updateReminder,
-                                    );
-                              },
-                            ),
-                          );
-                        },
+            Expanded(
+              child: Selector<TaskProvider, bool>(
+                selector: (_, p) => p.isLoading,
+                builder: (_, isLoading, __) {
+                  if (isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: blackColor),
+                    );
+                  }
+
+                  return Selector<TaskProvider, List<Map<String, dynamic>>>(
+                    selector: (_, p) => p.tasks,
+                    builder: (_, taskList, __) {
+                      if (taskList.isEmpty) return _EmptyState();
+
+                      return RefreshIndicator(
+                        color: blackColor,
+                        backgroundColor: whiteColor,
+                        onRefresh: context.read<TaskProvider>().refreshTasks,
+                        child: ListView.builder(
+                          key: const PageStorageKey('taskList'),
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 120),
+                          itemCount: taskList.length,
+                          itemBuilder: (context, index) {
+                            final tasks = taskList[index];
+                            return RepaintBoundary(
+                              child: TaskListTile(
+                                key: ValueKey(tasks['id']),
+                                taskTitle: tasks['title'],
+                                isCompleted: tasks['isCompleted'],
+                                reminderDateTime: tasks['reminder'] != null
+                                    ? (tasks['reminder'] as Timestamp).toDate()
+                                    : null,
+                                onStatusToggle: (value) {
+                                  HapticFeedback.selectionClick();
+                                  context
+                                      .read<TaskProvider>()
+                                      .toggleTaskStatus(tasks['id'], value);
+                                },
+                                onDelete: () {
+                                  HapticFeedback.heavyImpact();
+                                  context
+                                      .read<TaskProvider>()
+                                      .deleteTask(tasks['id']);
+                                },
+                                onEdit: (updatedTitle, updateReminder) {
+                                  context.read<TaskProvider>().editTask(
+                                        tasks['id'],
+                                        updatedTitle,
+                                        newReminder: updateReminder,
+                                      );
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
-                  ),
-                ),
+                  );
+                },
               ),
+            ),
           ],
         ),
       ),
@@ -219,9 +230,12 @@ class _AddTaskFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context
-          .findAncestorStateOfType<_HomeScreenState>()
-          ?._openAddTaskBottomSheet(context),
+      onTap: () {
+        HapticFeedback.mediumImpact();
+        context
+            .findAncestorStateOfType<_HomeScreenState>()
+            ?._openAddTaskBottomSheet(context);
+      },
       child: Container(
         height: 60.h,
         width: 60.w,
@@ -247,29 +261,31 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.inbox, size: 80, color: greyColor),
-          const SizedBox(height: 15),
-          Text(
-            "No tasks yet",
-            style: GoogleFonts.poppins(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w500,
-              color: greyColor,
+    return RepaintBoundary(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.inbox, size: 80, color: greyColor),
+            const SizedBox(height: 15),
+            Text(
+              "No tasks yet",
+              style: GoogleFonts.poppins(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w500,
+                color: greyColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            "Tap + to add your first task",
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
-              color: greyColor,
+            const SizedBox(height: 5),
+            Text(
+              "Tap + to add your first task",
+              style: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                color: greyColor,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

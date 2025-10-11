@@ -1,14 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/home_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/presentation/screens/home/home_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -44,29 +46,57 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   }
 
   Future<void> updatePassword() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      await authservice.value.resetPasswordWithCurrentPassword(
-        currentPassword: currentPasswordController.text,
-        newPassword: newPasswordController.text,
-        email: emailController.text,
+    if (emailController.text.isEmpty ||
+        currentPasswordController.text.isEmpty ||
+        newPasswordController.text.isEmpty) {
+      showFloatingSnackBar(
+        context,
+        message: "Please fill all fields",
+        backgroundColor: errorColor,
       );
-      showFloatingSnackBar(context,
-          message: "Password Changed Successfully",
-          backgroundColor: successColor);
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await authservice.value.resetPasswordWithCurrentPassword(
+        currentPassword: currentPasswordController.text.trim(),
+        newPassword: newPasswordController.text.trim(),
+        email: emailController.text.trim(),
+      );
+
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: "Password Changed Successfully",
+        backgroundColor: successColor,
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: e.message ?? "Password Change Failed",
+        backgroundColor: errorColor,
+      );
     } catch (e) {
-      showFloatingSnackBar(context,
-          message: "Password Change Failed", backgroundColor: errorColor);
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: "An unexpected error occurred",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
@@ -84,13 +114,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: blackColor),
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: const CustomAppBar(),
         ),
         body: SafeArea(
           child: Padding(
@@ -158,16 +184,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       ),
                     ),
                   ),
-                  SizedBox(height: 35.h),
+                  const SizedBox(height: 35),
                   isLoading
                       ? const Center(
                           child: CircularProgressIndicator(
                               color: blackColor, strokeWidth: 5),
                         )
                       : CustomButton(
-                          onPressed: () async {
-                            await updatePassword();
-                          },
+                          onPressed: () => updatePassword(),
                           height: 50.h,
                           width: double.infinity,
                           fontSize: 22.sp,

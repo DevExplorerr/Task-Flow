@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/change_password_screen.dart';
-import 'package:task_management_app/screens/delete_account_screen.dart';
-import 'package:task_management_app/screens/login_screen.dart';
-import 'package:task_management_app/screens/update_username_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_confirmation_dialogbox.dart';
-import 'package:task_management_app/widgets/menu.dart';
+import 'package:task_management_app/presentation/screens/home/change_password_screen.dart';
+import 'package:task_management_app/presentation/screens/home/delete_account_screen.dart';
+import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
+import 'package:task_management_app/presentation/screens/home/update_username_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/dialog/custom_confirmation_dialogbox.dart';
+import 'package:task_management_app/presentation/widgets/misc/menu.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -25,17 +25,37 @@ class _HomeDrawerState extends State<HomeDrawer> {
   void logout() async {
     try {
       await authservice.value.logout();
-      showFloatingSnackBar(context,
-          message: "Logged out successfully", backgroundColor: successColor);
+
+      if (!mounted) return;
       Navigator.pop(context);
+
+      showFloatingSnackBar(
+        context,
+        message: "Logged out successfully",
+        backgroundColor: successColor,
+      );
+
       await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      showFloatingSnackBar(context,
-          message: e.message.toString(), backgroundColor: errorColor);
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: e.message.toString(),
+        backgroundColor: errorColor,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: "An unexpected error occurred.",
+        backgroundColor: errorColor,
+      );
     }
   }
 
@@ -115,9 +135,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         builder: (context) => CustomConfirmationDialogbox(
                           title: "Are you sure you want to logout?",
                           buttonText: "Logout",
-                          onPressed: () {
-                            logout();
-                          },
+                          onPressed: () => logout(),
                         ),
                       );
                     }),

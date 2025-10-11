@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/widgets/colors.dart';
+import 'package:task_management_app/constants/colors.dart';
 
 void showFloatingSnackBar(
   BuildContext context, {

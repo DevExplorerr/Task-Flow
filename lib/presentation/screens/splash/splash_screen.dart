@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'login_screen.dart';
+import 'package:task_management_app/constants/colors.dart';
+import '../auth/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 180.h,
             width: double.infinity,
             fit: BoxFit.fill,
-            filterQuality: FilterQuality.high,
+            filterQuality: FilterQuality.medium,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -55,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   "assets/app_logo.png",
                   height: 220.h,
                   width: 239.w,
+                  filterQuality: FilterQuality.high,
                 ),
                 const SizedBox(height: 35),
                 const CircularProgressIndicator(
@@ -68,6 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 180.h,
             width: double.infinity,
             fit: BoxFit.fill,
+            filterQuality: FilterQuality.medium,
           )
         ],
       ),

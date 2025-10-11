@@ -85,5 +85,5 @@ app.*.map.json
 *.log
 
 # Firebase
-lib/firebase_options.dart
+lib/firebase/firebase_options.dart
 lib/nothing.dart

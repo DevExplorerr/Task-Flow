@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_management_app/widgets/custom_confirmation_dialogbox.dart';
-import 'colors.dart';
+import 'package:task_management_app/presentation/widgets/dialog/custom_confirmation_dialogbox.dart';
+import '../../../constants/colors.dart';
 
 class TaskSubHeader extends StatelessWidget {
   final VoidCallback ondeleteAll;

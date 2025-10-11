@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/login_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -50,31 +51,54 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
   }
 
   Future<void> deleteAccount() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      await authservice.value.deleteAccount(
-        email: emailController.text,
-        password: passwordController.text,
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      showFloatingSnackBar(
+        context,
+        message: "Please fill all fields",
+        backgroundColor: errorColor,
       );
-      showFloatingSnackBar(context,
-          message: "Account deleted successfully",
-          backgroundColor: successColor);
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await authservice.value.deleteAccount(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: "Account deleted successfully",
+        backgroundColor: successColor,
+      );
 
       await Future.delayed(const Duration(seconds: 1));
-      Navigator.pop(context);
-      Navigator.pushReplacement(
+
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
       );
     } on FirebaseAuthException catch (e) {
-      showFloatingSnackBar(context,
-          message: e.message.toString(), backgroundColor: errorColor);
-      setState(() {
-        isLoading = false;
-      });
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: e.message ?? "Account deletion failed",
+        backgroundColor: errorColor,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showFloatingSnackBar(
+        context,
+        message: "An unexpected error occurred",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -84,13 +108,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: blackColor),
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: const CustomAppBar(),
         ),
         body: SafeArea(
           child: Padding(
@@ -149,9 +169,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                               color: blackColor, strokeWidth: 5),
                         )
                       : CustomButton(
-                          onPressed: () async {
-                            await deleteAccount();
-                          },
+                          onPressed: () => deleteAccount(),
                           height: 50.h,
                           width: double.infinity,
                           fontSize: 22.sp,

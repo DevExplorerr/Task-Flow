@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/screens/login_screen.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/screens/home_screen.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/screens/home/home_screen.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -41,43 +41,61 @@ class _SignupScreenState extends State<SignupScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => errorMessage = "Please fill in all fields.");
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+
     try {
-      setState(() {
-        isLoading = true;
-      });
-      if (username.isEmpty || email.isEmpty || password.isEmpty) {
-        setState(() {
-          errorMessage = "Please fill in all fields.";
-        });
-        setState(() {
-          isLoading = false;
-        });
+      await authservice.value.signUp(
+        email: email,
+        password: password,
+        userName: username,
+      );
+
+      showFloatingSnackBar(
+        context,
+        message: "Registration successful",
+        backgroundColor: successColor,
+      );
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'email-already-in-use') {
+        message = "The email address is already in use.";
+      } else if (e.code == 'invalid-email') {
+        message = "Invalid email format.";
+      } else if (e.code == 'weak-password') {
+        message = "Password should be at least 6 characters.";
+      } else {
+        message = "Error: ${e.message ?? e.code}";
       }
 
-      await authservice.value.signUp(
-          email: _emailController.text,
-          password: _passwordController.text,
-          userName: _usernameController.text);
-      showFloatingSnackBar(context,
-          message: "Registration successful", backgroundColor: successColor);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        showFloatingSnackBar(context,
-            message: "The email address is already in use.",
-            backgroundColor: errorColor);
-      } else {
-        showFloatingSnackBar(context,
-            message: "Error: ${e.code}", backgroundColor: errorColor);
-      }
-    } catch (e) {
-      showFloatingSnackBar(context,
-          message: "Unexpected error occurred.", backgroundColor: errorColor);
+      showFloatingSnackBar(
+        context,
+        message: message,
+        backgroundColor: errorColor,
+      );
+    } catch (_) {
+      showFloatingSnackBar(
+        context,
+        message: "Unexpected error occurred. Please try again later.",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   String generateRandomPassword({int length = 8}) {
@@ -221,9 +239,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           buttonText: 'Generate',
                           buttonTextColor: primaryButtonTextColor,
                           fontSize: 24.sp,
-                          onPressed: () {
-                            _generatePassword();
-                          },
+                          onPressed: () => _generatePassword(),
                         ),
                       ],
                     ),

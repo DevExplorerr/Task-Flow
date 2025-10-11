@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/home_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/presentation/screens/home/home_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class UpdateUsernameScreen extends StatefulWidget {
   const UpdateUsernameScreen({super.key});
@@ -39,30 +40,46 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
   }
 
   Future<void> updateUsername() async {
+    final newUsername = userNameController.text.trim();
+
+    if (newUsername.isEmpty) {
+      showFloatingSnackBar(
+        context,
+        message: "Please enter a valid username",
+        backgroundColor: errorColor,
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
     try {
-      setState(() {
-        isLoading = true;
-      });
-      await authservice.value.updateUsername(userName: userNameController.text);
-      if (userNameController.text.isNotEmpty) {
-        showFloatingSnackBar(context,
-            message: "Username Changed Successfully",
-            backgroundColor: successColor);
+      await authservice.value.updateUsername(userName: newUsername);
+
+      showFloatingSnackBar(
+        context,
+        message: "Username changed successfully",
+        backgroundColor: successColor,
+      );
+
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
-      } else {
-        showFloatingSnackBar(context,
-            message: "Please enter a valid username",
-            backgroundColor: errorColor);
       }
     } catch (e) {
-      showFloatingSnackBar(context,
-          message: "Username Change Failed", backgroundColor: errorColor);
-      setState(() {
-        isLoading = false;
-      });
+      showFloatingSnackBar(
+        context,
+        message: "Username change failed. Please try again.",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -79,13 +96,9 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: blackColor),
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50),
+          child: const CustomAppBar(),
         ),
         body: SafeArea(
           child: Padding(
@@ -125,9 +138,7 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen>
                               color: blackColor, strokeWidth: 5),
                         )
                       : CustomButton(
-                          onPressed: () async {
-                            await updateUsername();
-                          },
+                          onPressed: () => updateUsername(),
                           buttonColor: primaryButtonColor,
                           buttonText: 'Update Username',
                           buttonTextColor: primaryButtonTextColor,

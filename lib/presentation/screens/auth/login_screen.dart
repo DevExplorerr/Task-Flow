@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
-import 'package:task_management_app/screens/reset_password_screen.dart';
-import 'package:task_management_app/services/auth_service.dart';
-import 'package:task_management_app/screens/signup_screen.dart';
-import 'package:task_management_app/widgets/colors.dart';
-import 'package:task_management_app/screens/home_screen.dart';
-import 'package:task_management_app/widgets/custom_button.dart';
-import 'package:task_management_app/widgets/custom_textfield.dart';
+import 'package:task_management_app/presentation/screens/auth/reset_password_screen.dart';
+import 'package:task_management_app/logic/services/auth_service.dart';
+import 'package:task_management_app/presentation/screens/auth/signup_screen.dart';
+import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/presentation/screens/home/home_screen.dart';
+import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
+import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,42 +35,51 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      if (_emailController.text.trim().isEmpty ||
-          _passwordController.text.trim().isEmpty) {
-        setState(() {
-          errorMessage = "Please enter email and password";
-        });
-        setState(() {
-          isLoading = false;
-        });
-      }
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      setState(() => errorMessage = "Please enter email and password");
+      return;
+    }
 
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+
+    try {
       await authservice.value.login(
-          email: _emailController.text, password: _passwordController.text);
-      showFloatingSnackBar(context,
-          message: "Login successfully", backgroundColor: successColor);
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      showFloatingSnackBar(
+        context,
+        message: "Login successfully",
+        backgroundColor: successColor,
+      );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
+      String message;
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        showFloatingSnackBar(context,
-            message: "Invalid email or password.", backgroundColor: errorColor);
+        message = "Invalid email or password.";
       } else {
-        showFloatingSnackBar(context,
-            message: "Error: ${e.code}", backgroundColor: errorColor);
+        message = "Error: ${e.message ?? e.code}";
       }
-    } catch (e) {
       showFloatingSnackBar(context,
-          message: "Unexpected error occurred.", backgroundColor: errorColor);
+          message: message, backgroundColor: errorColor);
+    } catch (e) {
+      showFloatingSnackBar(
+        context,
+        message: "Unexpected error occurred.",
+        backgroundColor: errorColor,
+      );
+    } finally {
+      setState(() => isLoading = false);
     }
-
-    setState(() => isLoading = false);
   }
 
   @override
@@ -90,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 265.h,
                       fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
                     ),
                   ),
                   Positioned(
@@ -195,9 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: blackColor, strokeWidth: 5),
                           )
                         : CustomButton(
-                            onPressed: () async {
-                              await _login();
-                            },
+                            onPressed: () => _login(),
                             height: 50.h,
                             width: double.infinity,
                             buttonColor: primaryButtonColor,
