@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 import 'custom_button.dart';
 import '../forms/custom_textfield.dart';
 

@@ -10,7 +10,7 @@ import 'package:task_management_app/presentation/screens/home/delete_account_scr
 import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
 import 'package:task_management_app/presentation/screens/home/update_username_screen.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 import 'package:task_management_app/presentation/widgets/dialog/custom_confirmation_dialogbox.dart';
 import 'package:task_management_app/presentation/widgets/misc/menu.dart';
 

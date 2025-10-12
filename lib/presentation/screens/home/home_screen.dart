@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/logic/provider/task_provider.dart';
 import 'package:task_management_app/logic/services/notification_service.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 import 'package:task_management_app/presentation/widgets/buttons/custom_bottom_sheet.dart';
 import 'package:task_management_app/presentation/widgets/app_bar/home_app_bar.dart';
 import 'package:task_management_app/presentation/widgets/drawer/home_drawer.dart';

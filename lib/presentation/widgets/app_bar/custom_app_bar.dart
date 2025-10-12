@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});

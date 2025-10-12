@@ -11,7 +11,7 @@ import 'package:task_management_app/logic/provider/task_provider.dart';
 import 'package:task_management_app/presentation/screens/home/home_screen.dart';
 import 'package:task_management_app/presentation/screens/splash/splash_screen.dart';
 import 'package:task_management_app/logic/services/notification_service.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

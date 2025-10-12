@@ -8,7 +8,7 @@ import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/auth/reset_password_screen.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
 import 'package:task_management_app/presentation/screens/auth/signup_screen.dart';
-import 'package:task_management_app/constants/colors.dart';
+import 'package:task_management_app/core/constants/app_colors.dart';
 import 'package:task_management_app/presentation/screens/home/home_screen.dart';
 import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
 import 'package:task_management_app/presentation/widgets/forms/custom_textfield.dart';
