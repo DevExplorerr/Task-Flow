@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/global/snackbar.dart';
+import 'package:task_management_app/logic/provider/theme_provider.dart';
 import 'package:task_management_app/presentation/screens/home/change_password_screen.dart';
 import 'package:task_management_app/presentation/screens/home/delete_account_screen.dart';
 import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
@@ -13,6 +15,7 @@ import 'package:task_management_app/logic/services/auth_service.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
 import 'package:task_management_app/presentation/widgets/dialog/custom_confirmation_dialogbox.dart';
 import 'package:task_management_app/presentation/widgets/misc/menu.dart';
+import 'package:task_management_app/presentation/widgets/misc/theme_menu.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -139,6 +142,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         ),
                       );
                     }),
+                ThemeMenu(
+                  onThemeSelected: (value) {
+                    if (value == 'system') {
+                      Provider.of<ThemeProvider>(context, listen: false)
+                          .toggleTheme();
+                    } else if (value == 'light') {
+                      // Set light theme
+                    } else if (value == 'dark') {
+                      // Set dark theme
+                    }
+                  },
+                ),
               ],
             ),
           ],

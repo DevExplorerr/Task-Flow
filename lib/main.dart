@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/firebase/firebase_options.dart';
+import 'package:task_management_app/logic/provider/theme_provider.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
 import 'package:task_management_app/logic/provider/task_provider.dart';
 import 'package:task_management_app/presentation/screens/home/home_screen.dart';
@@ -19,9 +20,19 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await NotificationService.init();
-  runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => TaskProvider())],
-      child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => TaskProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -36,27 +47,28 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Task Management",
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            textSelectionTheme: TextSelectionThemeData(
-                cursorColor: blackColor,
-                selectionColor: greyColor.withOpacity(0.5),
-                selectionHandleColor: blackColor),
-            textButtonTheme: TextButtonThemeData(
-                style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(
-                        blackColor.withOpacity(0.1)))),
-            iconButtonTheme: IconButtonThemeData(
-              style: ButtonStyle(
-                overlayColor:
-                    MaterialStateProperty.all(blackColor.withOpacity(0.1)),
-              ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                overlayColor:
-                    MaterialStateProperty.all(whiteColor.withOpacity(0.1)),
-              ),
-            )),
+        theme: Provider.of<ThemeProvider>(context).themeData,
+        // theme: ThemeData(
+        //     textSelectionTheme: TextSelectionThemeData(
+        //         cursorColor: blackColor,
+        //         selectionColor: greyColor.withOpacity(0.5),
+        //         selectionHandleColor: blackColor),
+        //     textButtonTheme: TextButtonThemeData(
+        //         style: ButtonStyle(
+        //             overlayColor: MaterialStateProperty.all(
+        //                 blackColor.withOpacity(0.1)))),
+        //     iconButtonTheme: IconButtonThemeData(
+        //       style: ButtonStyle(
+        //         overlayColor:
+        //             MaterialStateProperty.all(blackColor.withOpacity(0.1)),
+        //       ),
+        //     ),
+        //     elevatedButtonTheme: ElevatedButtonThemeData(
+        //       style: ButtonStyle(
+        //         overlayColor:
+        //             MaterialStateProperty.all(whiteColor.withOpacity(0.1)),
+        //       ),
+        //     )),
         home: StreamBuilder<User?>(
           stream: authservice.value.authStateChanges,
           builder: (context, snapshot) {
