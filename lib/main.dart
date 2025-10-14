@@ -47,34 +47,15 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Task Management",
         debugShowCheckedModeBanner: false,
-        theme: Provider.of<ThemeProvider>(context).themeData,
-        // theme: ThemeData(
-        //     textSelectionTheme: TextSelectionThemeData(
-        //         cursorColor: blackColor,
-        //         selectionColor: greyColor.withOpacity(0.5),
-        //         selectionHandleColor: blackColor),
-        //     textButtonTheme: TextButtonThemeData(
-        //         style: ButtonStyle(
-        //             overlayColor: MaterialStateProperty.all(
-        //                 blackColor.withOpacity(0.1)))),
-        //     iconButtonTheme: IconButtonThemeData(
-        //       style: ButtonStyle(
-        //         overlayColor:
-        //             MaterialStateProperty.all(blackColor.withOpacity(0.1)),
-        //       ),
-        //     ),
-        //     elevatedButtonTheme: ElevatedButtonThemeData(
-        //       style: ButtonStyle(
-        //         overlayColor:
-        //             MaterialStateProperty.all(whiteColor.withOpacity(0.1)),
-        //       ),
-        //     )),
+        theme: context.watch<ThemeProvider>().lightTheme,
+        darkTheme: context.watch<ThemeProvider>().darkTheme,
+        themeMode: context.watch<ThemeProvider>().themeMode,
         home: StreamBuilder<User?>(
           stream: authservice.value.authStateChanges,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(color: blackColor),
+                child: CircularProgressIndicator(color: AppColors.black),
               );
             } else if (snapshot.hasData) {
               return const HomeScreen();

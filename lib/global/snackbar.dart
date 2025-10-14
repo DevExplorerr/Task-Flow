@@ -21,7 +21,7 @@ void showFloatingSnackBar(
         message,
         style: GoogleFonts.poppins(
           fontSize: fontSize,
-          color: whiteColor,
+          color: AppColors.white,
           fontWeight: FontWeight.w500,
         ),
       ),
