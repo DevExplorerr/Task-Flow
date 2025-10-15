@@ -20,6 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await NotificationService.init();
+  final savedThemeMode = await ThemeProvider.loadThemeFromPrefs();
   runApp(
     MultiProvider(
       providers: [
@@ -27,7 +28,7 @@ void main() async {
           create: (_) => TaskProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
+          create: (_) => ThemeProvider(savedThemeMode),
         ),
       ],
       child: const MyApp(),
@@ -64,6 +65,19 @@ class MyApp extends StatelessWidget {
             }
           },
         ),
+        // home: Scaffold(
+        //   appBar: AppBar(title: const Text("Theme Test")),
+        //   body: Center(
+        //     child: Text("Change the theme from the drawer."),
+        //   ),
+        //   floatingActionButton: FloatingActionButton(
+        //     onPressed: () {
+        //       // This provides a simple way to toggle the theme for the test
+        //       context.read<ThemeProvider>().toggleTheme();
+        //     },
+        //     child: const Icon(Icons.brightness_6),
+        //   ),
+        // ),
       ),
     );
   }
