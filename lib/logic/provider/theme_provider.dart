@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_management_app/core/theme/app_theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeProvider(this._themeMode);
@@ -9,10 +10,8 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode;
 
   ThemeMode get themeMode => _themeMode;
-  ThemeData get lightTheme => ThemeData.light();
-  ThemeData get darkTheme => ThemeData.dark();
-  // ThemeData get lightTheme => AppTheme.lightMode;
-  // ThemeData get darkTheme => AppTheme.darkMode;
+  ThemeData get lightTheme => AppTheme.lightMode;
+  ThemeData get darkTheme => AppTheme.darkMode;
 
   static Future<ThemeMode> loadThemeFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();

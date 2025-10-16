@@ -65,19 +65,6 @@ class MyApp extends StatelessWidget {
             }
           },
         ),
-        // home: Scaffold(
-        //   appBar: AppBar(title: const Text("Theme Test")),
-        //   body: Center(
-        //     child: Text("Change the theme from the drawer."),
-        //   ),
-        //   floatingActionButton: FloatingActionButton(
-        //     onPressed: () {
-        //       // This provides a simple way to toggle the theme for the test
-        //       context.read<ThemeProvider>().toggleTheme();
-        //     },
-        //     child: const Icon(Icons.brightness_6),
-        //   ),
-        // ),
       ),
     );
   }
