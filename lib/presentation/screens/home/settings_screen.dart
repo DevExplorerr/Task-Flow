@@ -208,6 +208,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           child: AlertDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             elevation: 10,
             title: Text(
               'Choose theme',
@@ -280,7 +281,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               CustomButton(
                 onPressed: () => Navigator.of(context).pop(temp),
-                buttonColor: primaryButtonColor,
+                buttonColor: Theme.of(context).primaryColor,
                 buttonText: "Ok",
                 buttonTextColor: whiteColor,
               ),

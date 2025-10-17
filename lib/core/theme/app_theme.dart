@@ -8,7 +8,13 @@ class AppTheme {
   static final lightMode = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.white,
-    primaryColor: AppColors.primary,
+    primaryColor: AppColors.black,
+    textTheme: TextTheme(
+      titleMedium: GoogleFonts.cambo(
+        color: AppColors.black,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: AppColors.black,
       selectionColor: AppColors.grey.withOpacity(0.5),
@@ -30,6 +36,7 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(AppColors.primary),
         overlayColor: MaterialStateProperty.all(
           AppColors.white.withOpacity(0.1),
         ),
@@ -54,7 +61,13 @@ class AppTheme {
   static final darkMode = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.primary,
-    primaryColor: AppColors.white,
+    primaryColor: AppColors.secondary,
+    textTheme: TextTheme(
+      titleMedium: GoogleFonts.cambo(
+        color: AppColors.secondary,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.black,
       elevation: 0,
@@ -86,6 +99,7 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(AppColors.secondary),
         overlayColor: MaterialStateProperty.all(
           AppColors.black.withOpacity(0.1),
         ),
