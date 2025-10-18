@@ -36,10 +36,16 @@ class UserName extends StatelessWidget {
       stream:
           FirebaseFirestore.instance.collection("users").doc(uid).snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Text(
             "Loading...",
             style: theme.textTheme.titleMedium,
+          );
+        }
+        if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+          return Text(
+            "Welcome User",
+            style: theme.textTheme.titleLarge,
           );
         }
         final userData = snapshot.data!.data() as Map<String, dynamic>;
