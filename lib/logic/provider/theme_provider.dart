@@ -5,32 +5,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_management_app/core/theme/app_theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  ThemeProvider(this._themeMode);
+  final SharedPreferences _prefs;
 
-  ThemeMode _themeMode;
+  ThemeProvider(this._prefs) {
+    _loadTheme();
+  }
+
+  ThemeMode _themeMode = ThemeMode.system;
 
   ThemeMode get themeMode => _themeMode;
   ThemeData get lightTheme => AppTheme.lightMode;
   ThemeData get darkTheme => AppTheme.darkMode;
 
-  static Future<ThemeMode> loadThemeFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final theme = prefs.getString('themeMode') ?? 'system';
+  void _loadTheme() {
+    final theme = _prefs.getString('themeMode') ?? 'system';
 
     switch (theme) {
       case 'light':
-        return ThemeMode.light;
+        _themeMode = ThemeMode.light;
       case 'dark':
-        return ThemeMode.dark;
+        _themeMode = ThemeMode.dark;
       default:
-        return ThemeMode.system;
+        _themeMode = ThemeMode.system;
     }
   }
 
   // Save Theme
   Future<void> _saveTheme(String mode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('themeMode', mode);
+    await _prefs.setString('themeMode', mode);
   }
 
   // Set Theme

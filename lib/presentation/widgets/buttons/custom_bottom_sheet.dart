@@ -44,6 +44,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
@@ -53,7 +54,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             padding:
                 const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
             decoration: BoxDecoration(
-              color: bgColor,
+              color: theme.bottomSheetTheme.backgroundColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
             ),
             child: Column(
@@ -77,10 +78,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     reminder(context),
                     const SizedBox(width: 10),
                     CustomButton(
-                      buttonColor: primaryButtonColor,
                       buttonText: widget.buttonText,
-                      buttonTextColor: primaryButtonTextColor,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       onPressed: () {
                         widget.onPressed();
                         widget.onReminderSelected(_selectedDateTime);
@@ -97,42 +96,55 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   }
 
   Widget reminder(BuildContext context) {
+    final theme = Theme.of(context);
+    final reminderBgColor = theme.brightness == Brightness.dark
+        ? AppColors.white.withOpacity(0.1)
+        : AppColors.black.withOpacity(0.1);
     return GestureDetector(
       onTap: () => _showDateTimePicker(context),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-            color: blackColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8.r)),
-        child: Row(children: [
-          const Icon(Icons.alarm, color: blackColor, size: 20),
-          const SizedBox(width: 5),
-          Text(
+          color: reminderBgColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.alarm, color: theme.iconTheme.color, size: 20),
+            const SizedBox(width: 5),
+            Text(
+              _selectedDateTime != null
+                  ? DateFormat("MM/d, hh:mm a").format(_selectedDateTime!)
+                  : "Add Reminder",
+              style: theme.textTheme.labelSmall,
+            ),
+            const SizedBox(width: 8),
             _selectedDateTime != null
-                ? DateFormat("MM/d, hh:mm a").format(_selectedDateTime!)
-                : "Add Reminder",
-            style: GoogleFonts.poppins(
-                color: textColor, fontWeight: FontWeight.w500, fontSize: 12.sp),
-          ),
-          const SizedBox(width: 8),
-          _selectedDateTime != null
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedDateTime = null;
-                    });
-                    widget.onReminderSelected(null);
-                  },
-                  child: const Icon(Icons.cancel, color: blackColor),
-                )
-              : const SizedBox.shrink()
-        ]),
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedDateTime = null;
+                      });
+                      widget.onReminderSelected(null);
+                    },
+                    child: Icon(Icons.cancel, color: theme.iconTheme.color),
+                  )
+                : const SizedBox.shrink()
+          ],
+        ),
       ),
     );
   }
 
   void _showDateTimePicker(BuildContext context) {
     DateTime selectedDateTime = _selectedDateTime ?? DateTime.now();
+    final theme = Theme.of(context);
+    final dateTimePickerColor = theme.brightness == Brightness.dark
+        ? AppColors.primary
+        : AppColors.white;
+    final textButtonColor = theme.brightness == Brightness.dark
+        ? AppColors.secondary
+        : AppColors.primary;
 
     showModalBottomSheet(
       context: context,
@@ -143,8 +155,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         return Container(
           margin: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(18.r),
+            color: dateTimePickerColor,
+            borderRadius: BorderRadius.circular(18),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -162,7 +174,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: kToolbarHeight, vertical: 10),
+                  horizontal: kToolbarHeight,
+                  vertical: 10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -171,9 +185,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                       child: Text(
                         "Cancel",
                         style: GoogleFonts.poppins(
-                          fontSize: 14.sp,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.redAccent,
+                          color: AppColors.error,
                         ),
                       ),
                     ),
@@ -188,9 +202,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                       child: Text(
                         "Done",
                         style: GoogleFonts.poppins(
-                          fontSize: 14.sp,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: primaryButtonColor,
+                          color: textButtonColor,
                         ),
                       ),
                     ),

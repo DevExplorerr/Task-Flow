@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
 import '../auth/login_screen.dart';
@@ -28,13 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: AppColors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset(
             "assets/images/header.png",
-            height: 180.h,
+            height: 180,
             width: double.infinity,
             fit: BoxFit.fill,
             filterQuality: FilterQuality.medium,
@@ -46,27 +45,27 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text(
                   "Task Flow",
                   style: GoogleFonts.akayaTelivigala(
-                    fontSize: 30.sp,
-                    color: textColor,
+                    fontSize: 30,
+                    color: AppColors.textLight,
                   ),
                 ),
                 const SizedBox(height: 25),
                 Image.asset(
                   "assets/app_logo.png",
-                  height: 220.h,
-                  width: 239.w,
+                  height: 220,
+                  width: 239,
                   filterQuality: FilterQuality.high,
                 ),
                 const SizedBox(height: 35),
                 const CircularProgressIndicator(
-                  color: blackColor,
+                  color: AppColors.black,
                 )
               ],
             ),
           ),
           Image.asset(
             "assets/images/footer.png",
-            height: 180.h,
+            height: 180,
             width: double.infinity,
             fit: BoxFit.fill,
             filterQuality: FilterQuality.medium,

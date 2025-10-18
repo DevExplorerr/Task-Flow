@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
 
@@ -16,30 +15,43 @@ class _TaskSearchBarState extends State<TaskSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final brightnessCheck = theme.brightness == Brightness.dark;
+    final fillColor = brightnessCheck ? AppColors.primary : AppColors.white;
+    final enabledBorderSide =
+        brightnessCheck ? AppColors.black : AppColors.inputBorder;
+    final focusedBorderSide =
+        brightnessCheck ? AppColors.white : AppColors.black;
+    final inputTextColor =
+        brightnessCheck ? AppColors.textDark : AppColors.textLight;
     return TextField(
       controller: searchController,
       onChanged: widget.onSearchChanged,
+      style: GoogleFonts.podkova(color: inputTextColor),
       decoration: InputDecoration(
         contentPadding:
             const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
         hintText: 'Search task',
         hintStyle: GoogleFonts.podkova(
-          color: inputHintTextColor,
-          fontSize: 17.sp,
+          color: AppColors.inputHint,
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
         ),
-        suffixIcon: const Icon(Icons.search, color: inputIconColor),
+        suffixIcon: Icon(
+          Icons.search,
+          color: theme.inputDecorationTheme.iconColor,
+        ),
         filled: true,
-        fillColor: bgColor,
+        fillColor: fillColor,
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: inputBorderColor),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: enabledBorderSide),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: blackColor),
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: focusedBorderSide),
         ),
       ),
-      style: GoogleFonts.podkova(color: textColor),
     );
   }
 }

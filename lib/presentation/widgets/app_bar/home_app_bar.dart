@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
-import 'package:task_management_app/core/constants/app_colors.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});
@@ -21,11 +18,7 @@ class HomeAppBar extends StatelessWidget {
         const SizedBox(height: 5),
         Text(
           formattedDate,
-          style: GoogleFonts.poppins(
-            color: textColor,
-            fontWeight: FontWeight.w400,
-            fontSize: 14.sp,
-          ),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ],
     );
@@ -38,20 +31,22 @@ class UserName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return StreamBuilder<DocumentSnapshot>(
       stream:
           FirebaseFirestore.instance.collection("users").doc(uid).snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Text("Loading...");
+        if (!snapshot.hasData) {
+          return Text(
+            "Loading...",
+            style: theme.textTheme.titleMedium,
+          );
+        }
         final userData = snapshot.data!.data() as Map<String, dynamic>;
         final name = userData["name"] ?? "User";
         return Text(
           "Welcome $name",
-          style: GoogleFonts.poppins(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 24.sp,
-          ),
+          style: theme.textTheme.titleLarge,
         );
       },
     );

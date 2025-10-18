@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
 
@@ -29,47 +28,38 @@ class CustomTextfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final darkbrightness = theme.brightness == Brightness.dark;
+    final inputTextColor =
+        darkbrightness ? AppColors.textDark : AppColors.textLight;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           text,
-          style: GoogleFonts.poppins(
-            color: textColor,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
+          style: theme.textTheme.titleSmall,
         ),
         const SizedBox(
           height: 5,
         ),
         TextFormField(
-          style: GoogleFonts.poppins(color: textColor),
+          style: GoogleFonts.poppins(color: inputTextColor),
           autofocus: autoFocus ?? false,
           maxLines: maxLines ?? 1,
           keyboardType: keyboardType,
           controller: controller,
           textInputAction: textInputAction ?? TextInputAction.next,
           obscureText: obsecureText ?? false,
-          decoration: inputDecoration().copyWith(
+          decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: GoogleFonts.podkova(
-                color: inputHintTextColor, fontWeight: FontWeight.bold),
+            hintStyle: theme.inputDecorationTheme.hintStyle,
             suffixIcon: suffixIcon,
+            enabledBorder: theme.inputDecorationTheme.enabledBorder,
+            focusedBorder: theme.inputDecorationTheme.focusedBorder,
           ),
         ),
       ],
     );
   }
-
-  InputDecoration inputDecoration() => InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: const BorderSide(color: inputBorderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: const BorderSide(color: blackColor),
-        ),
-      );
 }

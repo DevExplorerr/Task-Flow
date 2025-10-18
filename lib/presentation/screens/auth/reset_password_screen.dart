@@ -2,7 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
@@ -54,7 +53,7 @@ class _ResetPasswordState extends State<ResetPassword>
       showFloatingSnackBar(
         context,
         message: "Please enter your email address.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
       return;
     }
@@ -67,7 +66,7 @@ class _ResetPasswordState extends State<ResetPassword>
       showFloatingSnackBar(
         context,
         message: "Reset link sent! Check your email.",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       await Future.delayed(const Duration(seconds: 1));
@@ -82,13 +81,13 @@ class _ResetPasswordState extends State<ResetPassword>
       showFloatingSnackBar(
         context,
         message: e.message ?? "An error occurred. Please try again.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } catch (_) {
       showFloatingSnackBar(
         context,
         message: "Unexpected error occurred. Try again later.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } finally {
       if (mounted) setState(() => isLoading = false);
@@ -97,10 +96,11 @@ class _ResetPasswordState extends State<ResetPassword>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: const CustomAppBar(),
@@ -114,28 +114,24 @@ class _ResetPasswordState extends State<ResetPassword>
                   const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: const Icon(
+                    child: Icon(
                       Icons.lock_outline,
                       size: 80,
-                      color: blackColor,
+                      color: theme.iconTheme.color,
                     ),
                   ),
                   const SizedBox(height: 25),
                   Text(
                     "Reset Password",
-                    style: GoogleFonts.poppins(
-                      color: textColor,
-                      fontSize: 28.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     "Enter your email to receive a reset link",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      color: listViewTextColor,
-                      fontSize: 14.sp,
+                      color: AppColors.grey,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 35),
@@ -147,15 +143,14 @@ class _ResetPasswordState extends State<ResetPassword>
                   ),
                   const SizedBox(height: 40),
                   isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(color: blackColor))
+                      ? Center(
+                          child: CircularProgressIndicator(
+                              color: theme.primaryColor))
                       : CustomButton(
-                          buttonColor: primaryButtonColor,
                           buttonText: "Reset Password",
-                          buttonTextColor: whiteColor,
-                          height: 48.h,
+                          height: 48,
                           width: double.infinity,
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           onPressed: () => resetPassword(),
                         ),
                 ],

@@ -2,7 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/auth/reset_password_screen.dart';
@@ -55,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
       showFloatingSnackBar(
         context,
         message: "Login successfully",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       Navigator.pushReplacement(
@@ -69,13 +68,16 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         message = "Error: ${e.message ?? e.code}";
       }
-      showFloatingSnackBar(context,
-          message: message, backgroundColor: errorColor);
+      showFloatingSnackBar(
+        context,
+        message: message,
+        backgroundColor: AppColors.error,
+      );
     } catch (e) {
       showFloatingSnackBar(
         context,
         message: "Unexpected error occurred.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } finally {
       setState(() => isLoading = false);
@@ -84,10 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -97,28 +100,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Image.asset(
                       'assets/images/header.png',
                       width: double.infinity,
-                      height: 265.h,
+                      height: 265,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
                     ),
                   ),
                   Positioned(
-                    top: 60.h,
-                    right: 20.w,
+                    top: 60,
+                    right: 20,
                     child: CustomButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SignupScreen()),
+                            builder: (context) => const SignupScreen(),
+                          ),
                         );
                       },
-                      height: 40.h,
-                      width: 130.w,
-                      buttonColor: secondaryButtonColor,
+                      height: 40,
+                      width: 130,
                       buttonText: 'SIGN UP',
-                      buttonTextColor: secondaryButtonTextColor,
-                      fontSize: 17.sp,
+                      fontSize: 17,
                     ),
                   ),
                 ],
@@ -133,11 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 5),
                     Text(
                       "Sign In To Continue",
-                      style: GoogleFonts.poppins(
-                        color: textColor,
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: theme.textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 35),
                     CustomTextfield(
@@ -163,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           isobscureText
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: blackColor,
+                          color: theme.iconTheme.color,
                         ),
                       ),
                     ),
@@ -179,48 +177,39 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         },
-                        child: Text(
-                          "Forgot Password?",
-                          style: GoogleFonts.poppins(
-                            color: textColor,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                        child: Text("Forgot Password?",
+                            style: theme.textTheme.titleSmall),
                       ),
                     ),
                     errorMessage.isNotEmpty
                         ? Padding(
-                            padding: EdgeInsets.only(top: 10.h),
+                            padding: const EdgeInsets.only(top: 10),
                             child: Text(
                               errorMessage,
-                              style: GoogleFonts.poppins(color: errorColor),
+                              style:
+                                  GoogleFonts.poppins(color: AppColors.error),
                             ),
                           )
                         : const SizedBox.shrink(),
                     const SizedBox(height: 45),
                     isLoading
-                        ? const Center(
+                        ? Center(
                             child: CircularProgressIndicator(
-                                color: blackColor, strokeWidth: 5),
+                              color: theme.primaryColor,
+                              strokeWidth: 5,
+                            ),
                           )
                         : CustomButton(
                             onPressed: () => _login(),
-                            height: 50.h,
+                            height: 50,
                             width: double.infinity,
-                            buttonColor: primaryButtonColor,
                             buttonText: 'SIGN IN',
-                            buttonTextColor: primaryButtonTextColor,
-                            fontSize: 22.sp,
+                            fontSize: 22,
                           ),
                     const SizedBox(height: 20),
                     Text(
                       "Terms and Conditions | Privacy Policy",
-                      style: GoogleFonts.poppins(
-                        color: textColor,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: theme.textTheme.labelSmall,
                     ),
                   ],
                 ),

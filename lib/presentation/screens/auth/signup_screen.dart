@@ -3,7 +3,6 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
@@ -61,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
       showFloatingSnackBar(
         context,
         message: "Registration successful",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       if (mounted) {
@@ -85,13 +84,13 @@ class _SignupScreenState extends State<SignupScreen> {
       showFloatingSnackBar(
         context,
         message: message,
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } catch (_) {
       showFloatingSnackBar(
         context,
         message: "Unexpected error occurred. Please try again later.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } finally {
       if (mounted) setState(() => isLoading = false);
@@ -114,10 +113,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -127,25 +127,24 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Image.asset(
                       'assets/images/header.png',
                       width: double.infinity,
-                      height: 265.h,
+                      height: 265,
                       fit: BoxFit.cover,
                     ),
                   ),
                   Positioned(
-                    top: 60.h,
-                    right: 20.w,
+                    top: 60,
+                    right: 20,
                     child: CustomButton(
-                      height: 40.h,
-                      width: 122.w,
-                      buttonColor: secondaryButtonColor,
+                      height: 40,
+                      width: 122,
                       buttonText: 'SIGN IN',
-                      buttonTextColor: secondaryButtonTextColor,
-                      fontSize: 17.sp,
+                      fontSize: 17,
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const LoginScreen()),
+                            builder: (context) => const LoginScreen(),
+                          ),
                         );
                       },
                     ),
@@ -162,11 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: 5),
                     Text(
                       "New User? Get Started Now",
-                      style: GoogleFonts.poppins(
-                        color: textColor,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: theme.textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 35),
                     CustomTextfield(
@@ -199,7 +194,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           isobscureText
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: blackColor,
+                          color: theme.iconTheme.color,
                         ),
                       ),
                     ),
@@ -208,7 +203,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             padding: const EdgeInsets.only(top: 10),
                             child: Text(
                               errorMessage,
-                              style: GoogleFonts.poppins(color: errorColor),
+                              style:
+                                  GoogleFonts.poppins(color: AppColors.error),
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -217,28 +213,24 @@ class _SignupScreenState extends State<SignupScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         isLoading
-                            ? const Center(
+                            ? Center(
                                 child: CircularProgressIndicator(
-                                    color: blackColor, strokeWidth: 5),
+                                  color: theme.primaryColor,
+                                  strokeWidth: 5,
+                                ),
                               )
                             : CustomButton(
-                                height: 50.h,
-                                width: 160.w,
-                                buttonColor: primaryButtonColor,
+                                height: 50,
+                                width: 140,
                                 buttonText: "SIGN UP",
-                                buttonTextColor: primaryButtonTextColor,
-                                fontSize: 22.sp,
-                                onPressed: () async {
-                                  await _register();
-                                },
+                                fontSize: 22,
+                                onPressed: () => _register(),
                               ),
                         CustomButton(
-                          height: 50.h,
-                          width: 160.w,
-                          buttonColor: primaryButtonColor,
+                          height: 50,
+                          width: 140,
                           buttonText: 'Generate',
-                          buttonTextColor: primaryButtonTextColor,
-                          fontSize: 24.sp,
+                          fontSize: 22,
                           onPressed: () => _generatePassword(),
                         ),
                       ],
@@ -246,11 +238,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: 20),
                     Text(
                       "Terms and Conditions | Privacy Policy",
-                      style: GoogleFonts.poppins(
-                        color: textColor,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: theme.textTheme.labelSmall,
                     ),
                   ],
                 ),

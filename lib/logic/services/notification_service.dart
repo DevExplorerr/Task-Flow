@@ -102,4 +102,8 @@ class NotificationService {
   static Future<void> cancelNotification(String taskId) async {
     await _notificationsPlugin.cancel(taskId.hashCode);
   }
+
+  static Future<void> cancelAllNotifications() async {
+    await _notificationsPlugin.cancelAll();
+  }
 }

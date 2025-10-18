@@ -9,7 +9,7 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      elevation: 0,
+      elevation: Theme.of(context).appBarTheme.elevation,
       scrolledUnderElevation: 0,
       title: Text(
         title ?? "",

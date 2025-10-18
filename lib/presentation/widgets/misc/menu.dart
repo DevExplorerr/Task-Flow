@@ -17,6 +17,12 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor =
+        theme.brightness == Brightness.dark ? AppColors.white : AppColors.black;
+    final bgColor = theme.brightness == Brightness.dark
+        ? AppColors.primary
+        : AppColors.secondary;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
@@ -25,12 +31,12 @@ class Menu extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r),
           ),
-          backgroundColor: bottomSheetbgColor,
+          backgroundColor: bgColor,
         ),
         onPressed: press,
         child: Row(
           children: [
-            Icon(icon, color: inputIconColor, size: 22.sp),
+            Icon(icon, color: theme.iconTheme.color, size: 22),
             const SizedBox(width: 20),
             Expanded(
               child: Text(
@@ -38,9 +44,9 @@ class Menu extends StatelessWidget {
                 style: GoogleFonts.rubik(color: textColor),
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              color: blackColor,
+              color: theme.iconTheme.color,
               size: 16,
             ),
           ],

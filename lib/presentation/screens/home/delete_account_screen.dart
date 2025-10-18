@@ -2,8 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/auth/login_screen.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
@@ -55,7 +53,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
       showFloatingSnackBar(
         context,
         message: "Please fill all fields",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
       return;
     }
@@ -72,7 +70,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
       showFloatingSnackBar(
         context,
         message: "Account deleted successfully",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       await Future.delayed(const Duration(seconds: 1));
@@ -88,14 +86,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
       showFloatingSnackBar(
         context,
         message: e.message ?? "Account deletion failed",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } catch (e) {
       if (!mounted) return;
       showFloatingSnackBar(
         context,
         message: "An unexpected error occurred",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } finally {
       if (mounted) setState(() => isLoading = false);
@@ -104,10 +102,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: const CustomAppBar(),
@@ -121,20 +120,16 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                   const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child: const Icon(
+                    child: Icon(
                       Icons.delete_forever,
                       size: 80,
-                      color: inputIconColor,
+                      color: theme.iconTheme.color,
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
                     "Delete my account",
-                    style: GoogleFonts.poppins(
-                      color: blackColor,
-                      fontSize: 28.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 40),
                   CustomTextfield(
@@ -158,24 +153,24 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                       },
                       icon: Icon(
                         obsecureText ? Icons.visibility_off : Icons.visibility,
-                        color: blackColor,
+                        color: theme.iconTheme.color,
                       ),
                     ),
                   ),
                   const SizedBox(height: 35),
                   isLoading
-                      ? const Center(
+                      ? Center(
                           child: CircularProgressIndicator(
-                              color: blackColor, strokeWidth: 5),
+                            color: theme.primaryColor,
+                            strokeWidth: 5,
+                          ),
                         )
                       : CustomButton(
                           onPressed: () => deleteAccount(),
-                          height: 50.h,
+                          height: 50,
                           width: double.infinity,
-                          fontSize: 22.sp,
-                          buttonColor: primaryButtonColor,
+                          fontSize: 22,
                           buttonText: 'Delete Permanently',
-                          buttonTextColor: primaryButtonTextColor,
                         ),
                 ],
               ),

@@ -31,9 +31,10 @@ class TaskListTile extends StatefulWidget {
 class _TaskListTileState extends State<TaskListTile> {
   void _openEditTaskBottomSheet() {
     final editController = TextEditingController(text: widget.taskTitle);
+    final theme = Theme.of(context);
     showModalBottomSheet(
       elevation: 10,
-      backgroundColor: bgColor,
+      backgroundColor: theme.bottomSheetTheme.backgroundColor,
       showDragHandle: true,
       isScrollControlled: true,
       context: context,
@@ -60,11 +61,14 @@ class _TaskListTileState extends State<TaskListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final brightnessCheck = theme.brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: inputBorderColor, width: 1),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
@@ -76,12 +80,11 @@ class _TaskListTileState extends State<TaskListTile> {
           ),
         ),
         child: ListTile(
-          minTileHeight: 40.h,
+          minTileHeight: 40,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 12,
             horizontal: 10,
           ),
-          tileColor: bgColor,
           title: GestureDetector(
             onTap: () => _openEditTaskBottomSheet(),
             child: AnimatedScale(
@@ -98,9 +101,11 @@ class _TaskListTileState extends State<TaskListTile> {
                       widget.taskTitle,
                       style: GoogleFonts.poppins(
                         color: widget.isCompleted
-                            ? listViewCompletedTextColor
-                            : textColor,
-                        fontSize: 16.sp,
+                            ? AppColors.listCompletedText
+                            : brightnessCheck
+                                ? AppColors.textDark
+                                : AppColors.listText,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         decoration: widget.isCompleted
                             ? TextDecoration.lineThrough
@@ -119,7 +124,7 @@ class _TaskListTileState extends State<TaskListTile> {
                               ? const SizedBox.shrink()
                               : const Icon(
                                   Icons.alarm,
-                                  color: errorColor,
+                                  color: AppColors.error,
                                   size: 20,
                                 ),
                           const SizedBox(width: 5),
@@ -130,8 +135,10 @@ class _TaskListTileState extends State<TaskListTile> {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               color: widget.isCompleted
-                                  ? listViewCompletedTextColor
-                                  : textColor,
+                                  ? AppColors.listCompletedText
+                                  : brightnessCheck
+                                      ? AppColors.textDark
+                                      : AppColors.textLight,
                               decoration: widget.isCompleted
                                   ? TextDecoration.lineThrough
                                   : TextDecoration.none,
@@ -159,8 +166,10 @@ class _TaskListTileState extends State<TaskListTile> {
                     ? Icons.check_box_rounded
                     : Icons.check_box_outline_blank_rounded,
                 color: widget.isCompleted
-                    ? listViewCheckBoxColor
-                    : listViewUnfillCheckBoxColor,
+                    ? brightnessCheck
+                        ? AppColors.secondary
+                        : AppColors.primary
+                    : AppColors.listUncheck,
                 size: 28.sp,
               ),
             ),
@@ -169,7 +178,7 @@ class _TaskListTileState extends State<TaskListTile> {
             onPressed: widget.onDelete,
             icon: const Icon(
               Icons.close_sharp,
-              color: listViewDeleteIconColor,
+              color: AppColors.listDeleteIcon,
               size: 28,
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/presentation/widgets/dialog/custom_confirmation_dialogbox.dart';
 import '../../../core/constants/app_colors.dart';
@@ -7,11 +6,16 @@ import '../../../core/constants/app_colors.dart';
 class TaskSubHeader extends StatelessWidget {
   final VoidCallback ondeleteAll;
   final int taskCount;
-  const TaskSubHeader(
-      {super.key, required this.ondeleteAll, required this.taskCount});
+  const TaskSubHeader({
+    super.key,
+    required this.ondeleteAll,
+    required this.taskCount,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final brightnessCheck = theme.brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -19,15 +23,15 @@ class TaskSubHeader extends StatelessWidget {
         children: [
           Text(
             "Total Tasks: $taskCount",
-            style: GoogleFonts.poppins(
-              color: textColor,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            style: theme.textTheme.titleSmall,
           ),
           TextButton(
             style: TextButton.styleFrom(
-              overlayColor: taskCount == 0 ? Colors.transparent : blackColor,
+              overlayColor: taskCount == 0
+                  ? Colors.transparent
+                  : brightnessCheck
+                      ? AppColors.white
+                      : AppColors.black,
             ),
             onPressed: taskCount == 0
                 ? null
@@ -53,8 +57,12 @@ class TaskSubHeader extends StatelessWidget {
             child: Text(
               "Delete All",
               style: GoogleFonts.poppins(
-                color: taskCount == 0 ? greyColor : blackColor,
-                fontSize: 16.sp,
+                color: taskCount == 0
+                    ? AppColors.grey
+                    : brightnessCheck
+                        ? AppColors.textDark
+                        : AppColors.textLight,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),

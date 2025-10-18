@@ -2,8 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/home/home_screen.dart';
 import 'package:task_management_app/logic/services/auth_service.dart';
@@ -52,7 +50,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       showFloatingSnackBar(
         context,
         message: "Please fill all fields",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
       return;
     }
@@ -70,7 +68,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       showFloatingSnackBar(
         context,
         message: "Password Changed Successfully",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       await Future.delayed(const Duration(seconds: 1));
@@ -85,14 +83,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       showFloatingSnackBar(
         context,
         message: e.message ?? "Password Change Failed",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } catch (e) {
       if (!mounted) return;
       showFloatingSnackBar(
         context,
         message: "An unexpected error occurred",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } finally {
       if (mounted) setState(() => isLoading = false);
@@ -110,10 +108,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: const CustomAppBar(),
@@ -127,17 +126,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                   const SizedBox(height: 25),
                   FadeTransition(
                     opacity: _fadeAnimation,
-                    child:
-                        const Icon(Icons.lock, size: 80, color: inputIconColor),
+                    child: Icon(
+                      Icons.lock,
+                      size: 80,
+                      color: theme.iconTheme.color,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Text(
                     "Change Password",
-                    style: GoogleFonts.poppins(
-                      color: blackColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 40),
                   CustomTextfield(
@@ -161,7 +159,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       },
                       icon: Icon(
                         obsecureText ? Icons.visibility_off : Icons.visibility,
-                        color: blackColor,
+                        color: theme.iconTheme.color,
                       ),
                     ),
                   ),
@@ -180,24 +178,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       },
                       icon: Icon(
                         obsecuretext ? Icons.visibility_off : Icons.visibility,
-                        color: blackColor,
+                        color: theme.iconTheme.color,
                       ),
                     ),
                   ),
                   const SizedBox(height: 35),
                   isLoading
-                      ? const Center(
+                      ? Center(
                           child: CircularProgressIndicator(
-                              color: blackColor, strokeWidth: 5),
+                            color: theme.primaryColor,
+                            strokeWidth: 5,
+                          ),
                         )
                       : CustomButton(
                           onPressed: () => updatePassword(),
-                          height: 50.h,
+                          height: 50,
                           width: double.infinity,
-                          fontSize: 22.sp,
-                          buttonColor: primaryButtonColor,
+                          fontSize: 22,
                           buttonText: 'Change Password',
-                          buttonTextColor: primaryButtonTextColor,
                         ),
                 ],
               ),

@@ -1,18 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
+import 'package:task_management_app/logic/provider/settings_provider.dart';
 import 'package:task_management_app/logic/provider/theme_provider.dart';
+import 'package:task_management_app/logic/services/notification_service.dart';
 import 'package:task_management_app/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:task_management_app/presentation/widgets/buttons/custom_button.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
-  // Helper function to get a user-friendly name for the current theme
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   String _getThemeModeName(ThemeMode themeMode) {
     switch (themeMode) {
       case ThemeMode.light:
@@ -26,16 +31,16 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use context.watch to listen for changes in the ThemeProvider
     final themeProvider = context.watch<ThemeProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
 
-    // Determine the icon color based on the current theme brightness
-    final iconAndTextColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : blackColor;
+    final theme = Theme.of(context);
+    final brightnessCheck = theme.brightness == Brightness.dark;
+    final textColor =
+        brightnessCheck ? AppColors.textDark : AppColors.textLight;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: const CustomAppBar(
@@ -43,26 +48,41 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 25.0,
-          vertical: kToolbarHeight,
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
         ),
         child: Column(
           children: [
-            GestureDetector(
-              // The onTap callback is now async to await the dialog result
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 20),
+              title: Text(
+                "Color Scheme",
+                style: GoogleFonts.poppins(
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              subtitle: Text(
+                _getThemeModeName(themeProvider.themeMode),
+                style: GoogleFonts.poppins(
+                  color: textColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              leading: Icon(
+                Icons.light_mode,
+                color: theme.iconTheme.color,
+              ),
               onTap: () async {
-                // Get the current theme mode as a lowercase string (e.g., 'system')
                 final currentTheme = themeProvider.themeMode.name;
 
-                // Show the dialog and wait for the user to make a choice
-                final newThemeName =
-                    await showThemeChoiceDialog(context, currentTheme);
+                final newThemeName = await showThemeChoiceDialog(
+                  context,
+                  currentTheme,
+                );
 
-                // If the user selected a theme and pressed "Ok" (result is not null)
                 if (newThemeName != null) {
                   ThemeMode newThemeMode;
-                  // Convert the string result back into a ThemeMode enum
                   switch (newThemeName) {
                     case 'light':
                       newThemeMode = ThemeMode.light;
@@ -75,104 +95,63 @@ class SettingsScreen extends StatelessWidget {
                       newThemeMode = ThemeMode.system;
                       break;
                   }
-                  // Update the theme using the provider.
-                  // Use context.read inside a callback/function.
                   context.read<ThemeProvider>().setThemeMode(newThemeMode);
                 }
               },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.light_mode,
-                    color: iconAndTextColor,
-                  ),
-                  const SizedBox(width: 25),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Color Scheme",
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      // This Text widget now displays the currently active theme
-                      Text(
-                        _getThemeModeName(themeProvider.themeMode),
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
             ),
-            const SizedBox(height: 35),
-            GestureDetector(
-              onTap: () {},
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.brush,
-                    color: iconAndTextColor,
-                  ),
-                  const SizedBox(width: 25),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Accent Color",
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        "Default",
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+            const SizedBox(height: 10),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+              title: Text(
+                "Notification",
+                style: GoogleFonts.poppins(
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 35),
-            GestureDetector(
-              onTap: () {},
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.language,
-                    color: iconAndTextColor,
-                  ),
-                  const SizedBox(width: 25),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Language",
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        "English",
-                        style: GoogleFonts.poppins(
-                          color: iconAndTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+              subtitle: Text(
+                settingsProvider.notificationEnabled ? "Enabled" : "Disabled",
+                style: GoogleFonts.poppins(
+                  color: textColor,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
+              leading: Icon(
+                settingsProvider.notificationEnabled
+                    ? Icons.notifications_active_outlined
+                    : Icons.notifications_off_outlined,
+                color: theme.iconTheme.color,
+              ),
+              trailing: Switch(
+                value: settingsProvider.notificationEnabled,
+                onChanged: (newValue) async {
+                  context
+                      .read<SettingsProvider>()
+                      .toggleNotifications(newValue);
+                  if (newValue) {
+                    await NotificationService.checkAndRequestPermission(
+                        context);
+                  }
+                },
+                activeTrackColor:
+                    brightnessCheck ? AppColors.white : AppColors.black,
+                activeThumbColor:
+                    brightnessCheck ? AppColors.black : AppColors.white,
+                inactiveThumbColor:
+                    brightnessCheck ? AppColors.white : AppColors.black,
+                inactiveTrackColor:
+                    brightnessCheck ? AppColors.black : AppColors.white,
+              ),
+              onTap: () async {
+                final currentValue = settingsProvider.notificationEnabled;
+                context
+                    .read<SettingsProvider>()
+                    .toggleNotifications(!currentValue);
+
+                if (!currentValue) {
+                  await NotificationService.checkAndRequestPermission(context);
+                }
+              },
             ),
           ],
         ),
@@ -182,16 +161,7 @@ class SettingsScreen extends StatelessWidget {
 
   Future<String?> showThemeChoiceDialog(BuildContext context, String current) {
     String temp = current;
-    // The rest of your dialog code remains the same as it's perfectly fine!
-    // I've just adjusted the colors to be more theme-friendly.
-    final dialogTextColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white70
-        : textColor;
-
-    final dialogTitleColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : blackColor;
-
+    final theme = Theme.of(context);
     return showDialog<String>(
       context: context,
       barrierDismissible: true,
@@ -203,25 +173,19 @@ class SettingsScreen extends StatelessWidget {
       builder: (context) {
         return Theme(
           data: Theme.of(context).copyWith(
-            radioTheme: RadioThemeData(
-              fillColor: WidgetStateProperty.all(blackColor),
-            ),
+            radioTheme: theme.radioTheme,
           ),
           child: AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            // ignore: deprecated_member_use
+            backgroundColor: Theme.of(context).dialogBackgroundColor,
             elevation: 10,
             title: Text(
               'Choose theme',
-              style: GoogleFonts.poppins(
-                color: dialogTitleColor,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-              ),
+              style: theme.textTheme.headlineSmall,
             ),
             content: StatefulBuilder(
               builder: (context, setState) {
                 return Column(
-                  // Removed the non-standard RadioGroup widget
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -231,11 +195,7 @@ class SettingsScreen extends StatelessWidget {
                       onChanged: (v) => setState(() => temp = v!),
                       child: Text(
                         'System (Default)',
-                        style: GoogleFonts.poppins(
-                          color: dialogTextColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: theme.textTheme.titleSmall,
                       ),
                     ),
                     RadioMenuButton<String>(
@@ -244,11 +204,7 @@ class SettingsScreen extends StatelessWidget {
                       onChanged: (v) => setState(() => temp = v!),
                       child: Text(
                         'Light Mode',
-                        style: GoogleFonts.poppins(
-                          color: dialogTextColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: theme.textTheme.titleSmall,
                       ),
                     ),
                     RadioMenuButton<String>(
@@ -257,11 +213,7 @@ class SettingsScreen extends StatelessWidget {
                       onChanged: (v) => setState(() => temp = v!),
                       child: Text(
                         'Dark Mode',
-                        style: GoogleFonts.poppins(
-                          color: dialogTextColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: theme.textTheme.titleSmall,
                       ),
                     ),
                   ],
@@ -273,17 +225,12 @@ class SettingsScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(null),
                 child: Text(
                   'Cancel',
-                  style: GoogleFonts.raleway(
-                    color: dialogTitleColor,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: theme.textButtonTheme.style!.textStyle!.resolve({}),
                 ),
               ),
               CustomButton(
                 onPressed: () => Navigator.of(context).pop(temp),
-                buttonColor: Theme.of(context).primaryColor,
                 buttonText: "Ok",
-                buttonTextColor: whiteColor,
               ),
             ],
           ),

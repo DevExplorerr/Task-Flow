@@ -2,7 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/global/snackbar.dart';
 import 'package:task_management_app/presentation/screens/home/change_password_screen.dart';
@@ -33,7 +32,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       showFloatingSnackBar(
         context,
         message: "Logged out successfully",
-        backgroundColor: successColor,
+        backgroundColor: AppColors.success,
       );
 
       await Future.delayed(const Duration(seconds: 1));
@@ -48,41 +47,38 @@ class _HomeDrawerState extends State<HomeDrawer> {
       showFloatingSnackBar(
         context,
         message: e.message.toString(),
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     } catch (e) {
       if (!mounted) return;
       showFloatingSnackBar(
         context,
         message: "An unexpected error occurred.",
-        backgroundColor: errorColor,
+        backgroundColor: AppColors.error,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final themeProvider = Provider.of<ThemeProvider>(context);
-    // final currentTheme = themeProvider.themeMode.name;
+    final theme = Theme.of(context);
+    final drawerHeader = theme.brightness == Brightness.dark
+        ? AppColors.black
+        : AppColors.primary;
     return Padding(
       padding: const EdgeInsets.only(left: 90),
       child: Drawer(
-        backgroundColor: bgColor,
-        elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.horizontal(left: Radius.circular(16.r)),
-        ),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: primaryButtonColor),
+              decoration: BoxDecoration(color: drawerHeader),
               child: Center(
                 child: Text(
                   'Menu',
                   style: GoogleFonts.poppins(
-                    color: primaryButtonTextColor,
-                    fontSize: 22.sp,
+                    color: AppColors.secondary,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -152,18 +148,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           builder: (_) => const SettingsScreen(),
                         ),
                       );
-                      // final selected =
-                      //     await showThemeChoiceDialog(context, currentTheme);
-
-                      // if (selected != null) {
-                      //   if (selected == 'system') {
-                      //     themeProvider.setThemeMode(ThemeMode.system);
-                      //   } else if (selected == 'light') {
-                      //     themeProvider.setThemeMode(ThemeMode.light);
-                      //   } else {
-                      //     themeProvider.setThemeMode(ThemeMode.dark);
-                      //   }
-                      // }
                     }),
               ],
             ),
