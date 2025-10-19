@@ -3,7 +3,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_management_app/firebase/firebase_options.dart';
@@ -46,11 +45,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      minTextAdapt: true,
-      splitScreenMode: true,
-      designSize: const Size(375, 812),
-      child: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
         return MaterialApp(
           title: "Task Management",
           debugShowCheckedModeBanner: false,
@@ -72,7 +68,7 @@ class MyApp extends StatelessWidget {
             },
           ),
         );
-      }),
+      },
     );
   }
 }
