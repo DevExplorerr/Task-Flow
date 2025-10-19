@@ -63,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openAddTaskBottomSheet(BuildContext context) {
     final theme = Theme.of(context);
     showModalBottomSheet(
-      elevation: 10,
       backgroundColor: theme.bottomSheetTheme.backgroundColor,
       showDragHandle: true,
       isScrollControlled: true,
