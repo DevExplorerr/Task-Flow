@@ -39,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
       bool granted =
           await NotificationService.checkAndRequestPermission(context);
 
