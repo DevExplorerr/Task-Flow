@@ -10,8 +10,8 @@ class CustomTextfield extends StatelessWidget {
   final IconButton? suffixIcon;
   final bool? obsecureText;
   final int? maxLines;
-  final bool? autoFocus;
   final TextInputAction? textInputAction;
+  final bool? autoFocus;
 
   const CustomTextfield({
     super.key,
@@ -22,8 +22,8 @@ class CustomTextfield extends StatelessWidget {
     required this.controller,
     required this.text,
     this.maxLines,
-    this.autoFocus,
     this.textInputAction,
+    this.autoFocus,
   });
 
   @override

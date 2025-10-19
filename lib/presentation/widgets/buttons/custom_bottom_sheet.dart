@@ -55,7 +55,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                 const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
             decoration: BoxDecoration(
               color: theme.bottomSheetTheme.backgroundColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -71,7 +71,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   autoFocus: true,
                   textInputAction: TextInputAction.newline,
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,9 +148,6 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
     showModalBottomSheet(
       context: context,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
       builder: (_) {
         return Container(
           margin: const EdgeInsets.all(20),
