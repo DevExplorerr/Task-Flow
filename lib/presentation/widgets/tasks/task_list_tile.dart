@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management_app/presentation/widgets/buttons/custom_bottom_sheet.dart';
@@ -170,7 +169,7 @@ class _TaskListTileState extends State<TaskListTile> {
                         ? AppColors.secondary
                         : AppColors.primary
                     : AppColors.listUncheck,
-                size: 28.sp,
+                size: 28,
               ),
             ),
           ),

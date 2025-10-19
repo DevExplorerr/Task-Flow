@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
 
@@ -29,7 +28,7 @@ class Menu extends StatelessWidget {
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.r),
+            borderRadius: BorderRadius.circular(15),
           ),
           backgroundColor: bgColor,
         ),

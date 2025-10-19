@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management_app/core/constants/app_colors.dart';
@@ -159,7 +158,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 250.h,
+                height: 250,
                 child: CupertinoDatePicker(
                   mode: CupertinoDatePickerMode.dateAndTime,
                   initialDateTime: _selectedDateTime ?? DateTime.now(),

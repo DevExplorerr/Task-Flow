@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -96,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(165.h),
+            preferredSize: const Size.fromHeight(165),
             child: const _StaticAppBar()),
         endDrawer: const HomeDrawer(),
         endDrawerEnableOpenDragGesture: true,
@@ -142,6 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         onRefresh: context.read<TaskProvider>().refreshTasks,
                         child: ListView.builder(
                           key: const PageStorageKey('taskList'),
+                          cacheExtent: 300,
+                          addAutomaticKeepAlives: false,
+                          addRepaintBoundaries: true,
                           physics: const AlwaysScrollableScrollPhysics(
                             parent: BouncingScrollPhysics(),
                           ),
@@ -263,9 +265,7 @@ class _AddTaskFloatingButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: AppColors.grey.withOpacity(0.8),
-              offset: Offset(0, 0),
-              spreadRadius: 2,
-              blurRadius: 10,
+              blurRadius: 5,
             )
           ],
         ),
