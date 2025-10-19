@@ -39,15 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final theme = Theme.of(context);
-
-      final snackBarBgColor = theme.brightness == Brightness.dark
-          ? AppColors.white
-          : AppColors.black;
-
-      final snackBarActionColor = theme.brightness == Brightness.dark
-          ? AppColors.textLight
-          : AppColors.textDark;
 
       bool granted =
           await NotificationService.checkAndRequestPermission(context);
@@ -56,10 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
         showFloatingSnackBar(
           context,
           message: "Enable notification to receive task reminders.",
-          backgroundColor: snackBarBgColor,
+          backgroundColor: AppColors.primary,
           action: SnackBarAction(
             label: "Open Settings",
-            textColor: snackBarActionColor,
+            textColor: AppColors.white,
             onPressed: () async => await openAppSettings(),
           ),
           duration: const Duration(seconds: 4),
