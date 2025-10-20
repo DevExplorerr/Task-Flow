@@ -29,19 +29,19 @@ void main() async {
           create: (_) => TaskProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ThemeProvider(prefs),
+          create: (_) => ThemeProvider(prefs: prefs),
         ),
         ChangeNotifierProvider(
-          create: (_) => SettingsProvider(prefs),
+          create: (_) => SettingsProvider(prefs: prefs),
         ),
       ],
-      child: const MyApp(),
+      child: const TaskFlow(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TaskFlow extends StatelessWidget {
+  const TaskFlow({super.key});
 
   @override
   Widget build(BuildContext context) {

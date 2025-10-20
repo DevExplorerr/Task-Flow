@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_management_app/core/theme/app_theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  final SharedPreferences _prefs;
+  final SharedPreferences? prefs;
 
-  ThemeProvider(this._prefs) {
+  ThemeProvider({this.prefs}) {
     _loadTheme();
   }
 
@@ -18,7 +18,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeData get darkTheme => AppTheme.darkMode;
 
   void _loadTheme() {
-    final theme = _prefs.getString('themeMode') ?? 'system';
+    final theme = prefs?.getString('themeMode') ?? 'system';
 
     switch (theme) {
       case 'light':
@@ -32,14 +32,12 @@ class ThemeProvider extends ChangeNotifier {
 
   // Save Theme
   Future<void> _saveTheme(String mode) async {
-    await _prefs.setString('themeMode', mode);
+    await prefs?.setString('themeMode', mode);
   }
 
   // Set Theme
   void setThemeMode(ThemeMode mode) {
-    if (mode == _themeMode) {
-      return;
-    }
+    if (mode == _themeMode) return;
 
     _themeMode = mode;
     notifyListeners();
