@@ -62,11 +62,12 @@ flutter pub get
 ### 4️⃣ Setup Firebase
 1. Create a Firebase project.  
 2. Enable Authentication (Email/Password) and Firestore Database.  
-3. Download `google-services.json` and place it in:  
+3. Download `google-services.json` and place it in:
+  
    ```
    android/app/google-services.json
    ```
-4. Add your Firebase configuration in:  
+5. Add your Firebase configuration in:  
    ```dart
    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
    ```
