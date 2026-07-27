@@ -46,7 +46,6 @@ app.*.map.json
 /android/app/release
 **/android/local.properties
 **/android/key.properties
-**/android/app/google-services.json
 
 # iOS
 **/ios/Flutter/Flutter.framework
@@ -55,7 +54,6 @@ app.*.map.json
 **/ios/Flutter/ephemeral/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
-**/ios/Runner/GoogleService-Info.plist
 
 # macOS
 **/macos/Flutter/GeneratedPluginRegistrant.swift
@@ -83,6 +81,3 @@ app.*.map.json
 
 # Logs
 *.log
-
-# Firebase
-lib/firebase/firebase_options.dart
