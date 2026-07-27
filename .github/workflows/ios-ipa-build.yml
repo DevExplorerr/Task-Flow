@@ -1,0 +1,46 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install Packages
+        run: flutter pub get
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod repo update
+          pod install
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: Create Payload
+        run: |
+          cd build/ios/iphoneos
+          mkdir Payload
+          mv Runner.app Payload
+
+      - name: Create IPA
+        run: |
+          cd build/ios/iphoneos
+          zip -r TaskFlow.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: TaskFlow-iOS
+          path: build/ios/iphoneos/TaskFlow.ipa
